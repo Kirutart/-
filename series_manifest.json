@@ -1,0 +1,33 @@
+{
+  "series": "last_lesson_pause_progression",
+  "frame_count": 9,
+  "canvas": {
+    "width": 941,
+    "height": 1672,
+    "aspect_ratio": "9:16"
+  },
+  "fixed_layout": {
+    "heroine_side": "left",
+    "virgil_side": "right",
+    "heroine_bounds_percent": { "x_min": 3, "x_max": 31 },
+    "virgil_bounds_percent": { "x_min": 69, "x_max": 97 },
+    "center_safe_zone_percent": {
+      "x_min": 34,
+      "x_max": 66,
+      "y_min": 10,
+      "y_max": 84
+    },
+    "ui_recommendation": "Place wave title, dialogue and Start button inside the center safe zone. Use object-fit: contain; do not crop the image."
+  },
+  "frames": [
+    { "wave": 1, "circle": "limbo", "file": "pause_01_limbo.png" },
+    { "wave": 2, "circle": "lust", "file": "pause_02_lust.png" },
+    { "wave": 3, "circle": "gluttony", "file": "pause_03_gluttony.png" },
+    { "wave": 4, "circle": "greed", "file": "pause_04_greed.png" },
+    { "wave": 5, "circle": "wrath", "file": "pause_05_wrath.png" },
+    { "wave": 6, "circle": "heresy", "file": "pause_06_heresy.png" },
+    { "wave": 7, "circle": "violence", "file": "pause_07_violence.png" },
+    { "wave": 8, "circle": "fraud", "file": "pause_08_fraud.png" },
+    { "wave": 9, "circle": "treachery", "file": "pause_09_treachery.png" }
+  ]
+}
