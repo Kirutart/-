@@ -1931,7 +1931,7 @@ function updatePhaseBreak(dt){
 function startNextWave(){ transitionToWave(waveNumber+1); }
 function finishRun(){
   saveRunRecord(true);
-  gameState='win'; restartBtn.style.display='block'; if(phaseBadge)phaseBadge.style.display='none'; if(damageMeter)damageMeter.style.display='none'; toast('ПЕРЕМЕНА ВЫИГРАНА!','#ffd37f',4); try{ window.TGGame?.notify('success'); }catch(_){}
+  gameState='win'; restartBtn.style.display='block'; if(phaseBadge)phaseBadge.style.display='none'; if(damageMeter)damageMeter.style.display='none'; toast('УРОК ПРОВЕДЁН · ТЫ ВЫШЛА В ДЕКРЕТ!','#ffd37f',4); try{ window.TGGame?.notify('success'); }catch(_){}
 }
 function updateWaveSystem(dt){
   if(waveRestTimer>0){
@@ -3359,8 +3359,8 @@ function drawMessages(){ ctx.textAlign='center'; let y=96; for(const m of messag
 function drawGameOver(win){
   ctx.fillStyle='#000b'; ctx.fillRect(0,0,W,H); ctx.textAlign='center';
   ctx.fillStyle='#fff'; ctx.font='bold 44px Consolas';
-  ctx.fillText(win?'ПЕРЕМЕНА':'УРОК СОРВАН',W/2,H/2-72);
-  if(win){ ctx.font='bold 34px Consolas'; ctx.fillText('ВЫИГРАНА',W/2,H/2-30); }
+  ctx.fillText(win?'УРОК ПРОВЕДЁН':'УРОК СОРВАН',W/2,H/2-72);
+  if(win){ ctx.font='bold 34px Consolas'; ctx.fillText('ТЫ ВЫШЛА В ДЕКРЕТ!',W/2,H/2-30); }
   ctx.fillStyle=win?'#f5ca53':'#ffb3b3'; ctx.font='bold 19px Consolas';
   const msg=win?'Ты прошла все девять кругов':'Попробуй собрать другой билд';
   ctx.fillText(msg,W/2,H/2+18);
