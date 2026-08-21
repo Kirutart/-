@@ -412,6 +412,7 @@ let currentEnvironment=null;
 let currentHazards=[];
 let envTransition=null;
 let interWaveActive=false;
+let interWaveSequence=0;
 let hazardGraceTimer=0;
 let envFX=[];
 let envFXSpawn=0;
@@ -793,27 +794,29 @@ function preloadPauseProgressImage(wave){
   PAUSE_PROGRESS_CACHE.set(src,p);
   return p;
 }
+const INTERWAVE_POST_CLEAR_DELAY_MS=1500;
+const INTERWAVE_FADE_IN_MS=1000;
 function createInterwaveProgressOverlay(){
   if(document.getElementById('interwaveProgress')) return;
   const d=document.createElement('div');
   d.id='interwaveProgress';
-  d.style.cssText='display:none;position:fixed;inset:0;z-index:275;background:#000;align-items:center;justify-content:center;padding:12px 12px max(18px,var(--game-safe-bottom,18px));box-sizing:border-box;touch-action:manipulation';
+  d.style.cssText='display:none;opacity:0;position:fixed;inset:0;z-index:275;background:#000;align-items:center;justify-content:center;padding:12px 12px max(18px,var(--game-safe-bottom,18px));box-sizing:border-box;touch-action:manipulation;pointer-events:none';
   d.innerHTML=`
     <div style="position:relative;width:min(96vw,560px);height:min(92vh,995px);display:flex;align-items:center;justify-content:center;">
       <img id="interwaveProgressImg" alt="pause progression" style="width:100%;height:100%;object-fit:contain;image-rendering:auto;display:block;filter:drop-shadow(0 18px 50px rgba(0,0,0,.7));" />
       <div id="interwaveProgressFallback" style="display:none;position:absolute;inset:0;border:1px solid rgba(180,150,90,.55);background:radial-gradient(circle at 50% 28%,rgba(45,42,31,.82),rgba(7,8,9,.96));"></div>
-      <div id="interwaveProgressCard" style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(36vw,210px);min-width:170px;max-width:230px;background:rgba(10,12,11,.88);border:1px solid rgba(199,165,93,.85);box-shadow:0 10px 36px rgba(0,0,0,.55);padding:14px 12px 12px;text-align:center;color:#efe5c9;backdrop-filter:blur(3px);">
-        <div id="interwaveProgressKicker" style="font:10px/1.2 Consolas,monospace;letter-spacing:.16em;color:#c8a85b;margin-bottom:8px">ЗАВУЧ</div>
-        <div id="interwaveProgressTitle" style="font:700 16px/1.08 Georgia,serif;letter-spacing:.03em;color:#f6e1a2;text-transform:uppercase"></div>
-        <div id="interwaveProgressText" style="margin-top:10px;font:13px/1.33 Georgia,serif;color:#efe5c9;min-height:64px"></div>
-        <button id="interwaveProgressBtn" type="button" style="margin-top:12px;width:100%;padding:10px 12px;border:1px solid #c7a55d;border-radius:999px;background:rgba(38,32,20,.92);color:#f6e1a2;font:700 12px/1 Consolas,monospace;letter-spacing:.08em">ПРОДОЛЖИТЬ</button>
+      <div id="interwaveProgressCard" style="position:absolute;left:50%;bottom:max(12px,var(--game-safe-bottom,12px));transform:translateX(-50%);width:min(90%,500px);max-width:500px;box-sizing:border-box;background:rgba(10,12,11,.78);border:1px solid rgba(199,165,93,.8);box-shadow:0 8px 28px rgba(0,0,0,.48);padding:8px 12px 9px;text-align:center;color:#efe5c9;backdrop-filter:blur(2px);">
+        <div id="interwaveProgressKicker" style="font:9px/1.1 Consolas,monospace;letter-spacing:.16em;color:#c8a85b;margin-bottom:3px">ЗАВУЧ</div>
+        <div id="interwaveProgressTitle" style="font:700 14px/1.08 Georgia,serif;letter-spacing:.03em;color:#f6e1a2;text-transform:uppercase"></div>
+        <div id="interwaveProgressText" style="margin:4px auto 0;max-width:460px;font:12px/1.22 Georgia,serif;color:#efe5c9"></div>
+        <button id="interwaveProgressBtn" type="button" style="display:block;margin:7px auto 0;width:min(100%,240px);padding:8px 18px;border:1px solid #c7a55d;border-radius:999px;background:rgba(38,32,20,.92);color:#f6e1a2;font:700 11px/1 Consolas,monospace;letter-spacing:.08em">ПРОДОЛЖИТЬ</button>
       </div>
       <div id="interwaveProgressLoading" style="position:absolute;left:50%;top:84%;transform:translateX(-50%);font:11px/1 Consolas,monospace;letter-spacing:.14em;color:#8d8776;">ЗАГРУЗКА ПЕРЕХОДА…</div>
     </div>`;
   document.body.appendChild(d);
 }
 createInterwaveProgressOverlay();
-async function showInterwaveProgress(completedWave,onContinue){
+async function showInterwaveProgress(completedWave,onContinue,sequence=interWaveSequence){
   createInterwaveProgressOverlay();
   const ov=document.getElementById('interwaveProgress');
   const img=document.getElementById('interwaveProgressImg');
@@ -823,17 +826,16 @@ async function showInterwaveProgress(completedWave,onContinue){
   const btn=document.getElementById('interwaveProgressBtn');
   const loading=document.getElementById('interwaveProgressLoading');
   const isFinal=completedWave>=MAX_WAVES;
-  title.textContent=WAVE_COMPLETE_TITLES[completedWave]||(`ВОЛНА ${completedWave} ПРОЙДЕНА`);
+  title.textContent=WAVE_COMPLETE_TITLES[completedWave]||('ВОЛНА '+completedWave+' ПРОЙДЕНА');
   txt.textContent=VIRGIL_PROGRESS_LINES[completedWave]||'Дальше.';
   btn.textContent=isFinal?'ЗАВЕРШИТЬ':'ПРОДОЛЖИТЬ';
   btn.disabled=true;
-  ov.style.display='flex';
   img.style.display='none';
   fallback.style.display='none';
   loading.style.display='block';
-  const nextBgPromise=completedWave<MAX_WAVES?loadBackground(completedWave+1):Promise.resolve(null);
-  const [loaded]=await Promise.all([preloadPauseProgressImage(completedWave),nextBgPromise]);
-  if(ov.style.display==='none') return;
+  if(completedWave<MAX_WAVES) loadBackground(completedWave+1);
+  const loaded=await preloadPauseProgressImage(completedWave);
+  if(sequence!==interWaveSequence||!interWaveActive||gameState!=='pause') return;
   releasePauseProgressCache(PAUSE_PROGRESS_IMAGES.get(completedWave));
   if(loaded&&loaded.src){
     img.src=loaded.src;
@@ -842,15 +844,24 @@ async function showInterwaveProgress(completedWave,onContinue){
     fallback.style.display='block';
   }
   loading.style.display='none';
+  ov.style.transition='opacity '+INTERWAVE_FADE_IN_MS+'ms ease';
+  ov.style.opacity='0';
+  ov.style.pointerEvents='none';
+  ov.style.display='flex';
+  void ov.offsetWidth;
+  requestAnimationFrame(()=>{ if(sequence===interWaveSequence&&ov.style.display!=='none') ov.style.opacity='1'; });
+  setTimeout(()=>{ if(sequence===interWaveSequence&&ov.style.display!=='none') ov.style.pointerEvents='auto'; },INTERWAVE_FADE_IN_MS);
   let done=false;
-  const readyDelay=Math.max(650,Math.min(1800,ENV_SPEC.transition.minimum_dialogue_pause_ms||1000));
-  setTimeout(()=>{ if(ov.style.display!=='none') btn.disabled=false; }, readyDelay);
+  const readyDelay=Math.max(INTERWAVE_FADE_IN_MS,Math.max(650,Math.min(1800,ENV_SPEC.transition.minimum_dialogue_pause_ms||1000)));
+  setTimeout(()=>{ if(sequence===interWaveSequence&&ov.style.display!=='none') btn.disabled=false; },readyDelay);
   btn.onclick=(e)=>{
     e.preventDefault(); e.stopPropagation();
     if(done||btn.disabled) return;
     done=true;
     btn.onclick=null;
     ov.style.display='none';
+    ov.style.opacity='0';
+    ov.style.pointerEvents='none';
     img.removeAttribute('src');
     releasePauseProgressCache();
     onContinue?.();
@@ -859,9 +870,13 @@ async function showInterwaveProgress(completedWave,onContinue){
 function beginInterWavePause(completedWave){
   if(interWaveActive||gameState!=='play') return;
   interWaveActive=true; gameState='pause'; relStick();
+  const sequence=++interWaveSequence;
   enemyProjectiles=[]; projectiles=[]; groundWaves=[]; particles=[]; weaponEvents=[]; ghosts=[];
   spawnTimer=999; bossMode='none'; currentBoss=null; if(phaseBadge) phaseBadge.style.display='none';
-  showInterwaveProgress(completedWave,()=>transitionToWave(completedWave+1));
+  setTimeout(()=>{
+    if(sequence!==interWaveSequence||!interWaveActive||gameState!=='pause') return;
+    showInterwaveProgress(completedWave,()=>transitionToWave(completedWave+1),sequence);
+  },INTERWAVE_POST_CLEAR_DELAY_MS);
 }
 function transitionToWave(nextWave){
   if(nextWave>MAX_WAVES){interWaveActive=false;finishRun();return;}
@@ -1606,7 +1621,7 @@ function reset(){
   enemies=[]; enemyProjectiles=[]; projectiles=[]; particles=[]; drops=[]; flyTexts=[]; messages=[]; ghosts=[]; groundWaves=[]; weaponEvents=[]; recentDamageEvents=[]; if(damageMeter) damageMeter.style.display='none';
   spawnTimer=.65; elapsed=0; gameState='play'; bossMomSpawned=false; bossDadSpawned=false; bossZavuchSpawned=false; bossMode='none'; currentBoss=null; wavePressure=1; barkGlobalCd=0; totalKills=0;
   waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
-  interWaveActive=false; envTransition=null; hazardGraceTimer=0; envSlideVX=0; envSlideVY=0; envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
+  interWaveActive=false; interWaveSequence++; envTransition=null; hazardGraceTimer=0; envSlideVX=0; envSlideVY=0; envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
   const interwave=document.getElementById('interwaveProgress'); if(interwave)interwave.style.display='none';
   overlay.style.display='none'; cards.innerHTML=''; titleBar.style.display='none'; restartBtn.style.display='none'; restartBtn.textContent='ЕЩЁ УРОК';
   if(testMenu) testMenu.style.display='none';
