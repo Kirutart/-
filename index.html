@@ -363,6 +363,7 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 const fallbackBg = new Image(); fallbackBg.src = 'data:image/png;base64,' + BG_DATA;
 let bg = fallbackBg;
+const chalkProjectileImg = new Image(); chalkProjectileImg.src = 'data:image/png;base64,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';
 const W = canvas.width, H = canvas.height;
 // Telegram/WebView can otherwise satisfy max-width/max-height independently and visibly squash Canvas.
 // Size the CSS box explicitly from the real available rectangle while preserving the intrinsic 720×1280 ratio.
@@ -401,7 +402,7 @@ function updateCamera(dt){
 }
 // === CIRCLES / ENVIRONMENTS v7.01 ===========================================
 const MAX_WAVES = 9;
-const ENV_SPEC = {"schema_version":"1.0","project":"Последний урок","design_resolution":{"width":2160,"height":3840,"aspect_ratio":"9:16","coordinate_system":"normalized_0_to_1"},"rendering":{"background_mode":"contain_no_crop","world_aspect_ratio":"9:16","letterbox_on_taller_screens":true,"recommended_device_pixel_ratio_cap":2,"preload_all_backgrounds":true,"never_use_background_size_cover":true},"player_collision":{"shape":"circle","recommended_radius_normalized":0.018,"solid_response":"minimum_translation_vector","max_substep_normalized":0.008},"arena_bounds":{"left":0.055,"right":0.945,"top":0.125,"bottom":0.985},"transition":{"freeze_enemies":true,"clear_enemy_projectiles":true,"disable_hazards_during_pause":true,"disable_player_attack_during_pause":true,"minimum_dialogue_pause_ms":1800,"continue_on_tap":true,"background_crossfade_ms":1200,"apply_new_colliders":"after_crossfade","hazard_grace_after_transition_ms":750,"resolve_player_overlap_to_nearest_safe_point":true,"do_not_reset":["player_hp","player_max_hp","weapons","perks","score","run_timer"]},"damage_defaults":{"fire":{"contact_damage_per_second":3,"tick_ms":1000,"afterburn_duration_ms":3000,"afterburn_damage_per_second":3,"refresh_on_reentry":true,"stack":false},"sharp_debris":{"damage_on_enter":1,"repeat_cooldown_ms":1000,"stack":false},"grasping_hand":{"damage_on_trigger":2,"immobilize_ms":350,"repeat_cooldown_ms":1200}},"waves":[{"wave":1,"circle":"Лимб","background":"01_limbo_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.29,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_3","shape":"rect","x":0.29,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_5","shape":"rect","x":0.28,"y":0.69,"w":0.11,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.69,"w":0.11,"h":0.07},{"id":"tv_cabinet","shape":"rect","x":0.66,"y":0.13,"w":0.15,"h":0.1},{"id":"right_shelf","shape":"rect","x":0.8,"y":0.12,"w":0.09,"h":0.14},{"id":"top_left_plant","shape":"ellipse","cx":0.19,"cy":0.16,"rx":0.06,"ry":0.05}],"hazards":[],"animations":[{"type":"dust_particles","count":45,"area":{"x":0.08,"y":0.12,"w":0.84,"h":0.82},"opacity":0.25},{"type":"light_pulse","period_ms":6500,"amplitude":0.06},{"type":"tv_flicker","area":{"x":0.68,"y":0.13,"w":0.1,"h":0.05},"min_interval_ms":4000,"max_interval_ms":8000}]},{"wave":2,"circle":"Влечение","background":"02_attraction_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.29,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_3","shape":"rect","x":0.29,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_5","shape":"rect","x":0.28,"y":0.69,"w":0.11,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.69,"w":0.11,"h":0.07},{"id":"valentine_mailbox","shape":"rect","x":0.66,"y":0.105,"w":0.17,"h":0.15},{"id":"right_shelf","shape":"rect","x":0.82,"y":0.12,"w":0.08,"h":0.14},{"id":"top_left_plant","shape":"ellipse","cx":0.19,"cy":0.16,"rx":0.06,"ry":0.05}],"hazards":[],"animations":[{"type":"orbiting_valentines","count":20,"speed_min":0.04,"speed_max":0.09,"max_screen_fraction":0.045},{"type":"wind_gust","min_interval_ms":4500,"max_interval_ms":8000,"duration_ms":900},{"type":"mailbox_glow","area":{"x":0.67,"y":0.11,"w":0.15,"h":0.14},"period_ms":2400}]},{"wave":3,"circle":"Чревоугодие","background":"03_gluttony_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.28,"y":0.39,"w":0.11,"h":0.075},{"id":"desk_2","shape":"rect","x":0.61,"y":0.39,"w":0.11,"h":0.075},{"id":"desk_3","shape":"rect","x":0.28,"y":0.54,"w":0.11,"h":0.075},{"id":"desk_4","shape":"rect","x":0.61,"y":0.54,"w":0.11,"h":0.075},{"id":"desk_5","shape":"rect","x":0.27,"y":0.7,"w":0.12,"h":0.075},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.12,"h":0.075},{"id":"tv_cabinet","shape":"rect","x":0.66,"y":0.13,"w":0.15,"h":0.1},{"id":"right_shelf","shape":"rect","x":0.81,"y":0.12,"w":0.08,"h":0.14}],"hazards":[{"id":"sticky_puddle_top","shape":"ellipse","cx":0.56,"cy":0.27,"rx":0.1,"ry":0.045,"effect":"slow","speed_multiplier":0.72},{"id":"sticky_puddle_mid","shape":"ellipse","cx":0.5,"cy":0.48,"rx":0.09,"ry":0.04,"effect":"slow","speed_multiplier":0.72},{"id":"sticky_puddle_bottom","shape":"ellipse","cx":0.54,"cy":0.88,"rx":0.12,"ry":0.05,"effect":"slow","speed_multiplier":0.72}],"animations":[{"type":"falling_drops","count":16,"spawn_interval_ms":320},{"type":"puddle_ripples","max_active":12,"duration_ms":900},{"type":"puddle_bubbles","zones":["sticky_puddle_top","sticky_puddle_mid","sticky_puddle_bottom"],"max_active":8}]},{"wave":4,"circle":"Алчность","background":"04_greed_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.4,"y":0.14,"w":0.21,"h":0.09},{"id":"desk_1","shape":"rect","x":0.29,"y":0.4,"w":0.1,"h":0.065},{"id":"desk_2","shape":"rect","x":0.61,"y":0.4,"w":0.1,"h":0.065},{"id":"desk_3","shape":"rect","x":0.29,"y":0.55,"w":0.1,"h":0.065},{"id":"desk_4","shape":"rect","x":0.61,"y":0.55,"w":0.1,"h":0.065},{"id":"desk_5","shape":"rect","x":0.28,"y":0.7,"w":0.11,"h":0.065},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.11,"h":0.065},{"id":"plasma_console","shape":"rect","x":0.64,"y":0.09,"w":0.22,"h":0.16},{"id":"wheels","shape":"ellipse","cx":0.89,"cy":0.63,"rx":0.06,"ry":0.055}],"hazards":[],"animations":[{"type":"cold_fluorescent_pulse","period_ms":5200,"amplitude":0.035},{"type":"banknote_flutter","area":{"x":0.02,"y":0.04,"w":0.11,"h":0.92},"count":18},{"type":"screen_shimmer","area":{"x":0.67,"y":0.1,"w":0.16,"h":0.1},"period_ms":3800}]},{"wave":5,"circle":"Гнев","background":"05_wrath_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.41,"y":0.14,"w":0.19,"h":0.085},{"id":"rubble_1","shape":"rect","x":0.26,"y":0.37,"w":0.16,"h":0.11},{"id":"rubble_2","shape":"rect","x":0.59,"y":0.38,"w":0.17,"h":0.11},{"id":"rubble_3","shape":"rect","x":0.25,"y":0.54,"w":0.17,"h":0.11},{"id":"rubble_4","shape":"rect","x":0.59,"y":0.54,"w":0.17,"h":0.11},{"id":"rubble_5","shape":"rect","x":0.24,"y":0.71,"w":0.18,"h":0.11},{"id":"rubble_6","shape":"rect","x":0.6,"y":0.71,"w":0.18,"h":0.11},{"id":"broken_tv_rubble","shape":"rect","x":0.69,"y":0.13,"w":0.17,"h":0.13}],"hazards":[{"id":"black_water","shape":"rect","x":0.06,"y":0.15,"w":0.88,"h":0.82,"effect":"slow","speed_multiplier":0.9}],"animations":[{"type":"water_ripples","max_active":20,"follow_player":true},{"type":"red_window_flicker","area":{"x":0.02,"y":0.04,"w":0.12,"h":0.91},"min_interval_ms":900,"max_interval_ms":2600},{"type":"broken_tv_static","area":{"x":0.71,"y":0.14,"w":0.1,"h":0.06},"min_interval_ms":3500,"max_interval_ms":6500}]},{"wave":6,"circle":"Ересь","background":"06_heresy_4k.png","solid_colliders":[{"id":"teacher_desk_flat_earth","shape":"rect","x":0.4,"y":0.13,"w":0.21,"h":0.1},{"id":"plastic_table_1","shape":"rect","x":0.22,"y":0.35,"w":0.17,"h":0.11},{"id":"plastic_table_2","shape":"rect","x":0.59,"y":0.35,"w":0.17,"h":0.11},{"id":"plastic_table_3","shape":"rect","x":0.22,"y":0.51,"w":0.17,"h":0.11},{"id":"plastic_table_4","shape":"rect","x":0.59,"y":0.51,"w":0.17,"h":0.11},{"id":"plastic_table_5","shape":"rect","x":0.21,"y":0.68,"w":0.18,"h":0.11},{"id":"plastic_table_6","shape":"rect","x":0.6,"y":0.68,"w":0.18,"h":0.11},{"id":"tv_cabinet","shape":"rect","x":0.69,"y":0.13,"w":0.16,"h":0.11}],"hazards":[{"id":"urine_puddle","shape":"ellipse","cx":0.82,"cy":0.22,"rx":0.08,"ry":0.04,"effect":"slippery","speed_multiplier":0.75,"inertia_multiplier":1.35}],"animations":[{"type":"lilac_smoke","emitters":[{"x":0.05,"y":0.2},{"x":0.93,"y":0.38},{"x":0.08,"y":0.84}],"max_particles":55},{"type":"purple_ambient_pulse","period_ms":4300,"amplitude":0.045},{"type":"flat_earth_wobble_glow","area":{"x":0.42,"y":0.12,"w":0.17,"h":0.07},"period_ms":3200,"max_offset_px_at_2160":3}]},{"wave":7,"circle":"Насилие","background":"07_violence_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.41,"y":0.14,"w":0.19,"h":0.08},{"id":"desk_1","shape":"rect","x":0.28,"y":0.39,"w":0.11,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.39,"w":0.11,"h":0.07},{"id":"desk_3","shape":"rect","x":0.28,"y":0.54,"w":0.11,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.54,"w":0.11,"h":0.07},{"id":"desk_5","shape":"rect","x":0.27,"y":0.7,"w":0.12,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.12,"h":0.07},{"id":"phone_box","shape":"rect","x":0.59,"y":0.15,"w":0.13,"h":0.085},{"id":"tv_cabinet","shape":"rect","x":0.68,"y":0.12,"w":0.16,"h":0.12}],"hazards":[{"id":"hand_top_left","shape":"ellipse","cx":0.19,"cy":0.22,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_top_right","shape":"ellipse","cx":0.77,"cy":0.27,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_mid_left","shape":"ellipse","cx":0.16,"cy":0.57,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_lower_right","shape":"ellipse","cx":0.79,"cy":0.76,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_bottom","shape":"ellipse","cx":0.45,"cy":0.95,"rx":0.075,"ry":0.05,"effect":"grasping_hand"},{"id":"sharp_debris_center","shape":"ellipse","cx":0.38,"cy":0.46,"rx":0.1,"ry":0.045,"effect":"sharp_debris"},{"id":"sharp_debris_lower_right","shape":"ellipse","cx":0.67,"cy":0.83,"rx":0.11,"ry":0.045,"effect":"sharp_debris"}],"animations":[{"type":"crack_red_glow","zones":["hand_top_left","hand_top_right","hand_mid_left","hand_lower_right","hand_bottom"],"period_ms":1900},{"type":"dirt_particles_from_cracks","max_particles":45},{"type":"boarded_window_ember_flicker","area":{"x":0.02,"y":0.04,"w":0.12,"h":0.92},"period_ms":1400},{"type":"screen_shake_on_grab","duration_ms":120,"amplitude_px_at_2160":5}]},{"wave":8,"circle":"Обман","background":"08_fraud_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.38,"y":0.14,"w":0.22,"h":0.09},{"id":"library_table_1","shape":"rect","x":0.24,"y":0.41,"w":0.16,"h":0.1},{"id":"library_table_2","shape":"rect","x":0.6,"y":0.41,"w":0.16,"h":0.1},{"id":"library_table_3","shape":"rect","x":0.23,"y":0.58,"w":0.17,"h":0.1},{"id":"library_table_4","shape":"rect","x":0.6,"y":0.58,"w":0.17,"h":0.1},{"id":"library_table_5","shape":"rect","x":0.22,"y":0.75,"w":0.18,"h":0.1},{"id":"library_table_6","shape":"rect","x":0.61,"y":0.75,"w":0.18,"h":0.1},{"id":"lockers","shape":"rect","x":0.68,"y":0.07,"w":0.22,"h":0.16}],"hazards":[{"id":"fire_top_left","shape":"ellipse","cx":0.11,"cy":0.29,"rx":0.1,"ry":0.075,"effect":"fire"},{"id":"fire_mid_left","shape":"ellipse","cx":0.09,"cy":0.73,"rx":0.11,"ry":0.075,"effect":"fire"},{"id":"fire_lower_right","shape":"ellipse","cx":0.88,"cy":0.82,"rx":0.11,"ry":0.075,"effect":"fire"}],"animations":[{"type":"procedural_fire","zones":["fire_top_left","fire_mid_left","fire_lower_right"],"max_particles_per_zone":28},{"type":"fire_smoke","zones":["fire_top_left","fire_mid_left","fire_lower_right"],"max_particles":40},{"type":"green_lamp_pulse","period_ms":2700,"amplitude":0.1},{"type":"loose_page_swirl","count":12,"speed":0.045},{"type":"false_door_mirage","min_interval_ms":5000,"max_interval_ms":9000,"duration_ms":750,"max_offset_px_at_2160":14}]},{"wave":9,"circle":"Предательство","background":null,"status":"pending_asset","fallback":"Keep the current existing Wave 9 implementation or temporarily reuse Wave 8 without adding new colliders. Do not invent a ninth background."}]};
+const ENV_SPEC = {"schema_version":"1.0","project":"Последний урок","design_resolution":{"width":2160,"height":3840,"aspect_ratio":"9:16","coordinate_system":"normalized_0_to_1"},"rendering":{"background_mode":"contain_no_crop","world_aspect_ratio":"9:16","letterbox_on_taller_screens":true,"recommended_device_pixel_ratio_cap":2,"preload_all_backgrounds":true,"never_use_background_size_cover":true},"player_collision":{"shape":"circle","recommended_radius_normalized":0.018,"solid_response":"minimum_translation_vector","max_substep_normalized":0.008},"arena_bounds":{"left":0.055,"right":0.945,"top":0.125,"bottom":0.985},"transition":{"freeze_enemies":true,"clear_enemy_projectiles":true,"disable_hazards_during_pause":true,"disable_player_attack_during_pause":true,"minimum_dialogue_pause_ms":1800,"continue_on_tap":true,"background_crossfade_ms":1200,"apply_new_colliders":"after_crossfade","hazard_grace_after_transition_ms":750,"resolve_player_overlap_to_nearest_safe_point":true,"do_not_reset":["player_hp","player_max_hp","weapons","perks","score","run_timer"]},"damage_defaults":{"fire":{"contact_damage_per_second":3,"tick_ms":1000,"afterburn_duration_ms":3000,"afterburn_damage_per_second":3,"refresh_on_reentry":true,"stack":false},"sharp_debris":{"damage_on_enter":1,"repeat_cooldown_ms":1000,"stack":false},"grasping_hand":{"damage_on_trigger":2,"immobilize_ms":350,"repeat_cooldown_ms":1200}},"waves":[{"wave":1,"circle":"Лимб","background":"01_limbo_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.29,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_3","shape":"rect","x":0.29,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_5","shape":"rect","x":0.28,"y":0.69,"w":0.11,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.69,"w":0.11,"h":0.07},{"id":"tv_cabinet","shape":"rect","x":0.66,"y":0.13,"w":0.15,"h":0.1},{"id":"right_shelf","shape":"rect","x":0.8,"y":0.12,"w":0.09,"h":0.14},{"id":"top_left_plant","shape":"ellipse","cx":0.19,"cy":0.16,"rx":0.06,"ry":0.05}],"hazards":[],"animations":[{"type":"dust_particles","count":45,"area":{"x":0.08,"y":0.12,"w":0.84,"h":0.82},"opacity":0.25},{"type":"light_pulse","period_ms":6500,"amplitude":0.06},{"type":"tv_flicker","area":{"x":0.68,"y":0.13,"w":0.1,"h":0.05},"min_interval_ms":4000,"max_interval_ms":8000}]},{"wave":2,"circle":"Влечение","background":"02_attraction_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.29,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.38,"w":0.1,"h":0.07},{"id":"desk_3","shape":"rect","x":0.29,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.53,"w":0.1,"h":0.07},{"id":"desk_5","shape":"rect","x":0.28,"y":0.69,"w":0.11,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.69,"w":0.11,"h":0.07},{"id":"valentine_mailbox","shape":"rect","x":0.66,"y":0.105,"w":0.17,"h":0.15},{"id":"right_shelf","shape":"rect","x":0.82,"y":0.12,"w":0.08,"h":0.14},{"id":"top_left_plant","shape":"ellipse","cx":0.19,"cy":0.16,"rx":0.06,"ry":0.05}],"hazards":[],"animations":[{"type":"orbiting_valentines","count":20,"speed_min":0.04,"speed_max":0.09,"max_screen_fraction":0.045},{"type":"wind_gust","min_interval_ms":4500,"max_interval_ms":8000,"duration_ms":900},{"type":"mailbox_glow","area":{"x":0.67,"y":0.11,"w":0.15,"h":0.14},"period_ms":2400}]},{"wave":3,"circle":"Чревоугодие","background":"03_gluttony_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.42,"y":0.14,"w":0.18,"h":0.08},{"id":"desk_1","shape":"rect","x":0.28,"y":0.39,"w":0.11,"h":0.075},{"id":"desk_2","shape":"rect","x":0.61,"y":0.39,"w":0.11,"h":0.075},{"id":"desk_3","shape":"rect","x":0.28,"y":0.54,"w":0.11,"h":0.075},{"id":"desk_4","shape":"rect","x":0.61,"y":0.54,"w":0.11,"h":0.075},{"id":"desk_5","shape":"rect","x":0.27,"y":0.7,"w":0.12,"h":0.075},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.12,"h":0.075},{"id":"tv_cabinet","shape":"rect","x":0.66,"y":0.13,"w":0.15,"h":0.1},{"id":"right_shelf","shape":"rect","x":0.81,"y":0.12,"w":0.08,"h":0.14}],"hazards":[{"id":"sticky_puddle_top","shape":"ellipse","cx":0.56,"cy":0.27,"rx":0.1,"ry":0.045,"effect":"slow","speed_multiplier":0.72},{"id":"sticky_puddle_mid","shape":"ellipse","cx":0.5,"cy":0.48,"rx":0.09,"ry":0.04,"effect":"slow","speed_multiplier":0.72},{"id":"sticky_puddle_bottom","shape":"ellipse","cx":0.54,"cy":0.88,"rx":0.12,"ry":0.05,"effect":"slow","speed_multiplier":0.72}],"animations":[{"type":"falling_drops","count":16,"spawn_interval_ms":320},{"type":"puddle_ripples","max_active":12,"duration_ms":900},{"type":"puddle_bubbles","zones":["sticky_puddle_top","sticky_puddle_mid","sticky_puddle_bottom"],"max_active":8}]},{"wave":4,"circle":"Алчность","background":"04_greed_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.4,"y":0.14,"w":0.21,"h":0.09},{"id":"desk_1","shape":"rect","x":0.29,"y":0.4,"w":0.1,"h":0.065},{"id":"desk_2","shape":"rect","x":0.61,"y":0.4,"w":0.1,"h":0.065},{"id":"desk_3","shape":"rect","x":0.29,"y":0.55,"w":0.1,"h":0.065},{"id":"desk_4","shape":"rect","x":0.61,"y":0.55,"w":0.1,"h":0.065},{"id":"desk_5","shape":"rect","x":0.28,"y":0.7,"w":0.11,"h":0.065},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.11,"h":0.065},{"id":"plasma_console","shape":"rect","x":0.64,"y":0.09,"w":0.22,"h":0.16},{"id":"wheels","shape":"ellipse","cx":0.89,"cy":0.63,"rx":0.06,"ry":0.055}],"hazards":[],"animations":[{"type":"cold_fluorescent_pulse","period_ms":5200,"amplitude":0.035},{"type":"banknote_flutter","area":{"x":0.02,"y":0.04,"w":0.11,"h":0.92},"count":18},{"type":"screen_shimmer","area":{"x":0.67,"y":0.1,"w":0.16,"h":0.1},"period_ms":3800}]},{"wave":5,"circle":"Гнев","background":"05_wrath_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.41,"y":0.14,"w":0.19,"h":0.085},{"id":"rubble_1","shape":"rect","x":0.26,"y":0.37,"w":0.16,"h":0.11},{"id":"rubble_2","shape":"rect","x":0.59,"y":0.38,"w":0.17,"h":0.11},{"id":"rubble_3","shape":"rect","x":0.25,"y":0.54,"w":0.17,"h":0.11},{"id":"rubble_4","shape":"rect","x":0.59,"y":0.54,"w":0.17,"h":0.11},{"id":"rubble_5","shape":"rect","x":0.24,"y":0.71,"w":0.18,"h":0.11},{"id":"rubble_6","shape":"rect","x":0.6,"y":0.71,"w":0.18,"h":0.11},{"id":"broken_tv_rubble","shape":"rect","x":0.69,"y":0.13,"w":0.17,"h":0.13}],"hazards":[{"id":"black_water","shape":"rect","x":0.06,"y":0.15,"w":0.88,"h":0.82,"effect":"slow","speed_multiplier":0.9}],"animations":[{"type":"water_ripples","max_active":20,"follow_player":true},{"type":"red_window_flicker","area":{"x":0.02,"y":0.04,"w":0.12,"h":0.91},"min_interval_ms":900,"max_interval_ms":2600},{"type":"broken_tv_static","area":{"x":0.71,"y":0.14,"w":0.1,"h":0.06},"min_interval_ms":3500,"max_interval_ms":6500}]},{"wave":6,"circle":"Ересь","background":"06_heresy_4k.png","solid_colliders":[{"id":"teacher_desk_flat_earth","shape":"rect","x":0.4,"y":0.13,"w":0.21,"h":0.1},{"id":"plastic_table_1","shape":"rect","x":0.22,"y":0.35,"w":0.17,"h":0.11},{"id":"plastic_table_2","shape":"rect","x":0.59,"y":0.35,"w":0.17,"h":0.11},{"id":"plastic_table_3","shape":"rect","x":0.22,"y":0.51,"w":0.17,"h":0.11},{"id":"plastic_table_4","shape":"rect","x":0.59,"y":0.51,"w":0.17,"h":0.11},{"id":"plastic_table_5","shape":"rect","x":0.21,"y":0.68,"w":0.18,"h":0.11},{"id":"plastic_table_6","shape":"rect","x":0.6,"y":0.68,"w":0.18,"h":0.11},{"id":"tv_cabinet","shape":"rect","x":0.69,"y":0.13,"w":0.16,"h":0.11}],"hazards":[{"id":"urine_puddle","shape":"ellipse","cx":0.82,"cy":0.22,"rx":0.08,"ry":0.04,"effect":"slippery","speed_multiplier":0.75,"inertia_multiplier":1.35}],"animations":[{"type":"lilac_smoke","emitters":[{"x":0.05,"y":0.2},{"x":0.93,"y":0.38},{"x":0.08,"y":0.84}],"max_particles":55},{"type":"purple_ambient_pulse","period_ms":4300,"amplitude":0.045},{"type":"flat_earth_wobble_glow","area":{"x":0.42,"y":0.12,"w":0.17,"h":0.07},"period_ms":3200,"max_offset_px_at_2160":3}]},{"wave":7,"circle":"Насилие","background":"07_violence_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.41,"y":0.14,"w":0.19,"h":0.08},{"id":"desk_1","shape":"rect","x":0.28,"y":0.39,"w":0.11,"h":0.07},{"id":"desk_2","shape":"rect","x":0.61,"y":0.39,"w":0.11,"h":0.07},{"id":"desk_3","shape":"rect","x":0.28,"y":0.54,"w":0.11,"h":0.07},{"id":"desk_4","shape":"rect","x":0.61,"y":0.54,"w":0.11,"h":0.07},{"id":"desk_5","shape":"rect","x":0.27,"y":0.7,"w":0.12,"h":0.07},{"id":"desk_6","shape":"rect","x":0.62,"y":0.7,"w":0.12,"h":0.07},{"id":"phone_box","shape":"rect","x":0.59,"y":0.15,"w":0.13,"h":0.085},{"id":"tv_cabinet","shape":"rect","x":0.68,"y":0.12,"w":0.16,"h":0.12}],"hazards":[{"id":"hand_top_left","shape":"ellipse","cx":0.19,"cy":0.22,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_top_right","shape":"ellipse","cx":0.77,"cy":0.27,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_mid_left","shape":"ellipse","cx":0.16,"cy":0.57,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_lower_right","shape":"ellipse","cx":0.79,"cy":0.76,"rx":0.07,"ry":0.055,"effect":"grasping_hand"},{"id":"hand_bottom","shape":"ellipse","cx":0.45,"cy":0.95,"rx":0.075,"ry":0.05,"effect":"grasping_hand"},{"id":"sharp_debris_center","shape":"ellipse","cx":0.38,"cy":0.46,"rx":0.1,"ry":0.045,"effect":"sharp_debris"},{"id":"sharp_debris_lower_right","shape":"ellipse","cx":0.67,"cy":0.83,"rx":0.11,"ry":0.045,"effect":"sharp_debris"}],"animations":[{"type":"crack_red_glow","zones":["hand_top_left","hand_top_right","hand_mid_left","hand_lower_right","hand_bottom"],"period_ms":1900},{"type":"dirt_particles_from_cracks","max_particles":45},{"type":"boarded_window_ember_flicker","area":{"x":0.02,"y":0.04,"w":0.12,"h":0.92},"period_ms":1400},{"type":"screen_shake_on_grab","duration_ms":120,"amplitude_px_at_2160":5}]},{"wave":8,"circle":"Обман","background":"08_fraud_4k.png","solid_colliders":[{"id":"teacher_desk","shape":"rect","x":0.38,"y":0.14,"w":0.22,"h":0.09},{"id":"library_table_1","shape":"rect","x":0.24,"y":0.41,"w":0.16,"h":0.1},{"id":"library_table_2","shape":"rect","x":0.6,"y":0.41,"w":0.16,"h":0.1},{"id":"library_table_3","shape":"rect","x":0.23,"y":0.58,"w":0.17,"h":0.1},{"id":"library_table_4","shape":"rect","x":0.6,"y":0.58,"w":0.17,"h":0.1},{"id":"library_table_5","shape":"rect","x":0.22,"y":0.75,"w":0.18,"h":0.1},{"id":"library_table_6","shape":"rect","x":0.61,"y":0.75,"w":0.18,"h":0.1},{"id":"lockers","shape":"rect","x":0.68,"y":0.07,"w":0.22,"h":0.16}],"hazards":[{"id":"fire_top_left","shape":"ellipse","cx":0.11,"cy":0.29,"rx":0.1,"ry":0.075,"effect":"fire"},{"id":"fire_mid_left","shape":"ellipse","cx":0.09,"cy":0.73,"rx":0.11,"ry":0.075,"effect":"fire"},{"id":"fire_lower_right","shape":"ellipse","cx":0.88,"cy":0.82,"rx":0.11,"ry":0.075,"effect":"fire"}],"animations":[{"type":"procedural_fire","zones":["fire_top_left","fire_mid_left","fire_lower_right"],"max_particles_per_zone":28},{"type":"fire_smoke","zones":["fire_top_left","fire_mid_left","fire_lower_right"],"max_particles":40},{"type":"green_lamp_pulse","period_ms":2700,"amplitude":0.1},{"type":"loose_page_swirl","count":12,"speed":0.045},{"type":"false_door_mirage","min_interval_ms":5000,"max_interval_ms":9000,"duration_ms":750,"max_offset_px_at_2160":14}]},{"wave":9,"circle":"Предательство","background":"09_treachery_4k.png","solid_colliders":[{"id":"judge_desk","shape":"rect","x":0.41,"y":0.14,"w":0.19,"h":0.09},{"id":"witness_table","shape":"rect","x":0.18,"y":0.245,"w":0.11,"h":0.07},{"id":"witness_chair","shape":"rect","x":0.205,"y":0.302,"w":0.055,"h":0.048},{"id":"cage","shape":"rect","x":0.78,"y":0.13,"w":0.11,"h":0.14},{"id":"electric_chair","shape":"rect","x":0.43,"y":0.73,"w":0.11,"h":0.10},{"id":"chair_console","shape":"rect","x":0.57,"y":0.75,"w":0.06,"h":0.06}],"hazards":[{"id":"traitor_desk_1","shape":"rect","x":0.29,"y":0.40,"w":0.09,"h":0.065,"effect":"void_trap","damage_on_trigger":20},{"id":"traitor_desk_2","shape":"rect","x":0.61,"y":0.40,"w":0.09,"h":0.065,"effect":"void_trap","damage_on_trigger":20},{"id":"traitor_desk_3","shape":"rect","x":0.29,"y":0.55,"w":0.09,"h":0.065,"effect":"void_trap","damage_on_trigger":20},{"id":"traitor_desk_4","shape":"rect","x":0.61,"y":0.55,"w":0.09,"h":0.065,"effect":"void_trap","damage_on_trigger":20},{"id":"burning_witness_table","shape":"ellipse","cx":0.23,"cy":0.27,"rx":0.09,"ry":0.08,"effect":"fire","damage_per_second":5,"afterburn_duration":3}],"animations":[{"type":"cold_fluorescent_pulse","period_ms":5400,"amplitude":0.04},{"type":"dust_particles","count":34,"area":{"x":0.08,"y":0.12,"w":0.84,"h":0.82},"opacity":0.18},{"type":"screen_shimmer","area":{"x":0.44,"y":0.145,"w":0.13,"h":0.05},"period_ms":4200}]}]};
 const ENV_BY_WAVE = new Map((ENV_SPEC.waves||[]).map(w=>[w.wave,w]));
 const ENV_IMAGES = new Map();
 let ENV_PRELOAD_DONE=false;
@@ -417,7 +418,9 @@ let envFXSpawn=0;
 let envCameraShake=0;
 let envCameraShakeAmp=0;
 let envLastPointer={x:.5,y:.5};
-let envBurn={active:false,inside:false,remaining:0,tick:0};
+let envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
+let wave9RespawnUsed=false;
+let wave9RespawnPending=false;
 const envHazardCooldowns=new Map();
 window.DEBUG_COLLISIONS=false;
 
@@ -430,29 +433,38 @@ function environmentName(w=currentEnvironmentWave){
 }
 function envWaveDef(w){
   const d=ENV_BY_WAVE.get(w);
-  if(d?.background) return d;
-  // Ninth circle intentionally reuses the eighth environment until its own art exists.
-  return ENV_BY_WAVE.get(8)||d;
+  return d||ENV_BY_WAVE.get(1);
+}
+const ENV_LOAD_PROMISES=new Map();
+const ENV_FAILED_BACKGROUNDS=new Set();
+function loadBackground(wave){
+  const w=Math.max(1,Math.min(MAX_WAVES,wave|0));
+  const def=ENV_BY_WAVE.get(w);
+  if(!def?.background) return Promise.resolve(null);
+  if(ENV_IMAGES.has(w)) return Promise.resolve(ENV_IMAGES.get(w));
+  if(ENV_FAILED_BACKGROUNDS.has(w)) return Promise.resolve(null);
+  if(ENV_LOAD_PROMISES.has(w)) return ENV_LOAD_PROMISES.get(w);
+  const p=new Promise(resolve=>{
+    const img=new Image(); img.decoding='async'; let settled=false;
+    const finish=(value)=>{if(settled)return;settled=true;clearTimeout(timer);ENV_LOAD_PROMISES.delete(w);if(value){ENV_FAILED_BACKGROUNDS.delete(w);ENV_IMAGES.set(w,value);}else ENV_FAILED_BACKGROUNDS.add(w);resolve(value||null);};
+    const timer=setTimeout(()=>{console.warn('[Последний урок] Таймаут загрузки фона',def.background);finish(null);},9000);
+    img.onload=()=>finish(img);
+    img.onerror=()=>{console.warn('[Последний урок] Не удалось загрузить фон',def.background);finish(null);};
+    img.src=def.background;
+  });
+  ENV_LOAD_PROMISES.set(w,p); return p;
+}
+function pruneBackgroundCache(keepWaves=[]){
+  const keep=new Set(keepWaves.filter(Boolean));
+  for(const w of [...ENV_IMAGES.keys()]) if(!keep.has(w)) ENV_IMAGES.delete(w);
 }
 function preloadBackgrounds(){
   if(ENV_PRELOAD_PROMISE) return ENV_PRELOAD_PROMISE;
-  const defs=(ENV_SPEC.waves||[]).filter(d=>d.background);
-  ENV_PRELOAD_PROMISE=Promise.all(defs.map(def=>new Promise(resolve=>{
-    const img=new Image();
-    img.decoding='async';
-    let settled=false;
-    const finish=(ok)=>{if(settled)return;settled=true;clearTimeout(timer);if(ok)ENV_IMAGES.set(def.wave,img);resolve(ok);};
-    // Android content:// can leave relative image requests hanging instead of firing error.
-    // Never let one missing 4K asset block the whole game forever.
-    const timer=setTimeout(()=>{console.warn('[Последний урок] Таймаут загрузки фона',def.background);finish(false);},18000);
-    img.onload=()=>finish(true);
-    img.onerror=()=>{console.warn('[Последний урок] Не удалось загрузить фон',def.background);finish(false);};
-    img.src=def.background;
-  }))).then(results=>{
+  // Mobile WebView: never decode all 4K circles at once. Warm only the first two.
+  ENV_PRELOAD_PROMISE=Promise.all([loadBackground(1),loadBackground(2)]).then(results=>{
     ENV_PRELOAD_DONE=true;
-    const loaded=results.filter(Boolean).length;
-    if(loaded<defs.length) console.warn(`[Последний урок] Загружено фонов ${loaded}/${defs.length}. Для недоступных используется резервный фон.`);
-    return loaded;
+    if(!results[0]) console.warn('[Последний урок] Первый фон недоступен — используется резервный.');
+    return results.filter(Boolean).length;
   });
   return ENV_PRELOAD_PROMISE;
 }
@@ -484,9 +496,16 @@ function setWaveEnvironment(waveIndex,{immediate=true}={}){
   currentEnvironment=def||null;
   obstacles=(def?.solid_colliders||[]).map(normalizeSolid);
   currentHazards=(def?.hazards||[]).map(normalizeHazard);
-  const img=ENV_IMAGES.get(def?.wave)||ENV_IMAGES.get(Math.min(8,requested));
+  const img=ENV_IMAGES.get(def?.wave);
   if(immediate && img) bg=img;
+  else if(immediate) loadBackground(requested).then(loaded=>{if(loaded&&currentEnvironmentWave===requested&&gameState!=='pause') bg=loaded;});
   initEnvironmentEffects();
+  // Keep memory bounded: current circle + the next one only.
+  const next=requested<MAX_WAVES?requested+1:null;
+  pruneBackgroundCache([requested,next]);
+  if(next) loadBackground(next);
+  // Warm only this circle's pause image; previous pause art may be released.
+  if(typeof warmPauseProgressForWave==='function') warmPauseProgressForWave(requested);
   return def;
 }
 
@@ -569,11 +588,64 @@ function nearestSafePoint(x,y,r){
   for(let radius=10;radius<=180;radius+=10)for(let i=0;i<24;i++){const a=i/24*Math.PI*2;const p={x:x+Math.cos(a)*radius,y:y+Math.sin(a)*radius,r};resolveEnvironmentCollisions(p);if(canStandAt(p.x,p.y,r,false))return p;}
   return {x:floorBounds.x+floorBounds.w*.5,y:floorBounds.y+floorBounds.h*.82,r};
 }
+function nearestSafePointOutsideVoid(x,y,r){
+  const safe=(px,py)=>canStandAt(px,py,r,false)&&!currentHazards.some(h=>h.effect==='void_trap'&&pointInHazard(h,px,py,r*.55));
+  for(let radius=28;radius<=260;radius+=18)for(let i=0;i<32;i++){const a=i/32*Math.PI*2;const p={x:x+Math.cos(a)*radius,y:y+Math.sin(a)*radius,r};resolveEnvironmentCollisions(p);if(safe(p.x,p.y))return p;}
+  const fallback={x:floorBounds.x+floorBounds.w*.5,y:floorBounds.y+floorBounds.h*.90,r};resolveEnvironmentCollisions(fallback);return fallback;
+}
+function canUseWave9Respawn(){ return waveNumber===9 && !wave9RespawnUsed; }
+function finishFailureState(){
+  wave9RespawnPending=false;
+  saveRunRecord(false);
+  gameState='lose';
+  if(phaseBadge)phaseBadge.style.display='none';
+  if(damageMeter)damageMeter.style.display='none';
+  restartBtn.textContent='ЕЩЁ УРОК';
+  restartBtn.style.display='block';
+  toast('Урок сорван','#ff9e9e',3);
+  try{ window.TGGame?.notify('error'); }catch(_){}
+}
+function enterWave9RespawnState(){
+  wave9RespawnPending=true;
+  gameState='lose';
+  if(phaseBadge)phaseBadge.style.display='none';
+  if(damageMeter)damageMeter.style.display='none';
+  restartBtn.textContent='ВОЗРОДИТЬСЯ';
+  restartBtn.style.display='block';
+  toast('Предательство ещё не закончено. Есть один шанс вернуться.','#f6e1a2',3.2);
+  try{ window.TGGame?.notify('warning'); }catch(_){}
+}
+function handlePlayerDefeat(){
+  if(canUseWave9Respawn()) enterWave9RespawnState();
+  else finishFailureState();
+}
+function tryWave9Respawn(){
+  if(!(waveNumber===9 && wave9RespawnPending && !wave9RespawnUsed)) return false;
+  wave9RespawnUsed=true;
+  wave9RespawnPending=false;
+  gameState='play';
+  restartBtn.style.display='none';
+  restartBtn.textContent='ЕЩЁ УРОК';
+  player.maxHp=Math.max(player.maxHp,30);
+  player.hp=30;
+  player.hurtFlash=.25;
+  player.knockdown=0;
+  envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
+  const safe=nearestSafePoint(floorBounds.x+floorBounds.w*.5,floorBounds.y+floorBounds.h*.9,player.r);
+  player.x=safe.x; player.y=safe.y;
+  enemyProjectiles=[];
+  hazardGraceTimer=1.2;
+  snapCameraToPlayer();
+  toast('ВОЗРОЖДЕНИЕ · +30 HP','#baf6bf',2.8);
+  flyText(player.x,player.y-44,'+30 HP','#baf6bf');
+  try{ window.TGGame?.notify('success'); }catch(_){}
+  return true;
+}
 
 function environmentDamage(amount){
   if(gameState!=='play'||interWaveActive||hazardGraceTimer>0||player.parkour?.active)return;
   player.hp=Math.max(0,player.hp-amount);player.hurtFlash=.12;
-  if(player.hp<=0){saveRunRecord(false);gameState='lose';if(phaseBadge)phaseBadge.style.display='none';if(damageMeter)damageMeter.style.display='none';restartBtn.style.display='block';toast('Урок сорван','#ff9e9e',3);try{window.TGGame?.notify('error');}catch(_){}}
+  if(player.hp<=0){ handlePlayerDefeat(); }
 }
 function updateEnvironmentHazards(p,dt){
   if(hazardGraceTimer>0)hazardGraceTimer=Math.max(0,hazardGraceTimer-dt);
@@ -584,19 +656,20 @@ function updateEnvironmentHazards(p,dt){
     if(!inside)continue;
     if(h.effect==='grasping_hand'){const next=envHazardCooldowns.get(h.id)||0;if(now>=next){envHazardCooldowns.set(h.id,now+1.2);environmentDamage(2);p.knockdown=Math.max(p.knockdown||0,.35);envCameraShake=.12;envCameraShakeAmp=5;spawnEnvBurst(h.cx,h.cy,'#8f2f27',12);}}
     else if(h.effect==='sharp_debris'){const next=envHazardCooldowns.get(h.id)||0;if(now>=next){envHazardCooldowns.set(h.id,now+1);environmentDamage(1);spawnEnvBurst(h.cx,h.cy,'#c58d67',7);}}
-    else if(h.effect==='fire'){insideFire=true;if(!envBurn.active){envBurn.active=true;envBurn.tick=1;}envBurn.inside=true;envBurn.remaining=3;}
+    else if(h.effect==='void_trap'){const next=envHazardCooldowns.get(h.id)||0;if(now>=next){envHazardCooldowns.set(h.id,now+1.2);environmentDamage(Number(h.damage_on_trigger)||20);envCameraShake=.16;envCameraShakeAmp=7;spawnEnvBurst(p.x,p.y,'#9a9aa2',10);if(gameState==='play'){const safe=nearestSafePointOutsideVoid(p.x,p.y,p.r);p.x=safe.x;p.y=safe.y;flyText(p.x,p.y-30,'ПРОВАЛ','#d6d6de');}}}
+    else if(h.effect==='fire'){insideFire=true;if(!envBurn.active){envBurn.active=true;envBurn.tick=1;}envBurn.dps=Number(h.damage_per_second)||3;envBurn.inside=true;envBurn.remaining=Number(h.afterburn_duration)||3;}
   }
   if(!insideFire)envBurn.inside=false;
   if(envBurn.active){
     if(!envBurn.inside)envBurn.remaining=Math.max(0,envBurn.remaining-dt);else envBurn.remaining=3;
     envBurn.tick-=dt;
-    if(envBurn.tick<=0){environmentDamage(3);envBurn.tick=1;}
+    if(envBurn.tick<=0){environmentDamage(envBurn.dps||3);envBurn.tick=1;}
     if(envBurn.remaining<=0&&!envBurn.inside){envBurn.active=false;envBurn.tick=0;}
   }
 }
 
 function spawnEnvBurst(x,y,color,count=8){for(let i=0;i<count&&envFX.length<100;i++){const a=Math.random()*Math.PI*2,s=20+Math.random()*75;envFX.push({kind:'burst',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.3+Math.random()*.35,max:.65,color,size:1+Math.random()*3});}}
-function initEnvironmentEffects(){envFX=[];envFXSpawn=0;envHazardCooldowns.clear();envBurn={active:false,inside:false,remaining:0,tick:0};
+function initEnvironmentEffects(){envFX=[];envFXSpawn=0;envHazardCooldowns.clear();envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
   const w=currentEnvironmentWave;
   if(w===1)for(let i=0;i<45;i++)envFX.push({kind:'dust',x:floorBounds.x+Math.random()*floorBounds.w,y:floorBounds.y+Math.random()*floorBounds.h,vx:-2+Math.random()*4,vy:-4-Math.random()*5,life:999,max:999,size:1+Math.random()*1.8,phase:Math.random()*6.28});
   if(w===2)for(let i=0;i<20;i++)envFX.push({kind:'heart',cx:WORLD_W*(.22+Math.random()*.56),cy:WORLD_H*(.25+Math.random()*.56),rx:50+Math.random()*210,ry:35+Math.random()*130,a:Math.random()*6.28,speed:.22+Math.random()*.35,size:5+Math.random()*7});
@@ -606,7 +679,6 @@ function initEnvironmentEffects(){envFX=[];envFXSpawn=0;envHazardCooldowns.clear
 function updateEnvironmentEffects(dt){
   if(document.hidden)return;
   envCameraShake=Math.max(0,envCameraShake-dt);envFXSpawn-=dt;const w=currentEnvironmentWave;
-  if(w===3){for(const h of currentHazards.filter(h=>h.effect==='slow')){for(let i=0;i<2;i++){const a=t*(.8+i*.3)+h.cx*.01+i*2.1,rr=.25+.18*i;ctx.fillStyle='rgba(245,215,135,.08)';ctx.beginPath();ctx.arc(h.cx+Math.cos(a)*h.rx*rr,h.cy+Math.sin(a*1.3)*h.ry*.55,2+i,0,Math.PI*2);ctx.fill();}}}
   for(const f of envFX){
     if(f.kind==='dust'){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.y<floorBounds.y)f.y=floorBounds.y+floorBounds.h;if(f.x<floorBounds.x)f.x+=floorBounds.w;if(f.x>floorBounds.x+floorBounds.w)f.x-=floorBounds.w;}
     else if(f.kind==='heart')f.a+=f.speed*dt;
@@ -627,11 +699,13 @@ function renderEnvironmentEffects(ctx){
   const w=currentEnvironmentWave,t=elapsed;ctx.save();
   if(w===1){const a=.025+.025*Math.sin(t*Math.PI*2/6.5);const g=ctx.createRadialGradient(WORLD_W*.25,WORLD_H*.28,20,WORLD_W*.25,WORLD_H*.28,520);g.addColorStop(0,`rgba(255,238,190,${a})`);g.addColorStop(1,'rgba(255,238,190,0)');ctx.fillStyle=g;ctx.fillRect(0,0,WORLD_W,WORLD_H);if(Math.sin(t*.9)>.94){const r=envArea({x:.68,y:.13,w:.10,h:.05});ctx.fillStyle='rgba(235,240,240,.18)';ctx.fillRect(r.x,r.y,r.w,r.h);}}
   if(w===2){const p=.07+.05*Math.sin(t*2.6);ctx.fillStyle=`rgba(255,115,174,${p})`;ctx.fillRect(WORLD_W*.67,WORLD_H*.11,WORLD_W*.15,WORLD_H*.14);if(Math.sin(t*.78)>.92){ctx.strokeStyle='rgba(255,220,230,.10)';ctx.lineWidth=2;for(let i=0;i<7;i++){const y=floorBounds.y+80+i*130;ctx.beginPath();ctx.moveTo(floorBounds.x,y);ctx.bezierCurveTo(WORLD_W*.35,y-14,WORLD_W*.65,y+18,floorBounds.x+floorBounds.w,y-5);ctx.stroke();}}}
+  if(w===3){for(const h of currentHazards.filter(h=>h.effect==='slow')){for(let i=0;i<2;i++){const a=t*(.8+i*.3)+h.cx*.01+i*2.1,rr=.25+.18*i;ctx.fillStyle='rgba(245,215,135,.08)';ctx.beginPath();ctx.arc(h.cx+Math.cos(a)*h.rx*rr,h.cy+Math.sin(a*1.3)*h.ry*.55,2+i,0,Math.PI*2);ctx.fill();}}}
   if(w===4){ctx.fillStyle=`rgba(188,213,224,${.018+.014*Math.sin(t*1.2)})`;ctx.fillRect(0,0,WORLD_W,WORLD_H);if(Math.sin(t*1.65)>.96){const r=envArea({x:.67,y:.10,w:.16,h:.10});const g=ctx.createLinearGradient(r.x,r.y,r.x+r.w,r.y+r.h);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(210,235,250,.16)');g.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.fillRect(r.x,r.y,r.w,r.h);}}
   if(w===5){ctx.strokeStyle='rgba(140,156,161,.20)';for(const f of envFX.filter(x=>x.kind==='ripple')){const q=1-f.life/f.max;ctx.globalAlpha=1-q;ctx.beginPath();ctx.ellipse(f.x,f.y,8+q*36,4+q*18,0,0,Math.PI*2);ctx.stroke();}ctx.globalAlpha=1;if(Math.sin(t*5.1)>.88){ctx.fillStyle='rgba(125,15,12,.035)';ctx.fillRect(0,0,WORLD_W*.14,WORLD_H);}if(Math.sin(t*.95)>.965){const r=envArea({x:.71,y:.14,w:.10,h:.06});ctx.fillStyle='rgba(220,220,220,.16)';for(let i=0;i<8;i++)ctx.fillRect(r.x,r.y+Math.random()*r.h,r.w,1);}}
   if(w===6){ctx.fillStyle=`rgba(112,50,140,${.018+.018*Math.sin(t*1.45)})`;ctx.fillRect(0,0,WORLD_W,WORLD_H);const r=envArea({x:.42,y:.12,w:.17,h:.07});ctx.strokeStyle=`rgba(180,130,205,${.035+.025*Math.sin(t*1.96)})`;ctx.strokeRect(r.x+Math.sin(t*1.96)*1.3,r.y,r.w,r.h);}
   if(w===7){const a=.06+.05*Math.sin(t*3.3);for(const h of currentHazards.filter(h=>h.effect==='grasping_hand'))drawHazardShape(ctx,h,`rgba(180,28,20,${a})`);if(Math.sin(t*4.4)>.82){ctx.fillStyle='rgba(150,20,14,.045)';ctx.fillRect(0,0,WORLD_W*.13,WORLD_H);}}
   if(w===8){for(const h of currentHazards.filter(h=>h.effect==='fire')){const pulse=.05+.04*Math.sin(t*5+h.cx);drawHazardShape(ctx,h,`rgba(255,104,35,${pulse})`);}const lamp=.022+.025*Math.sin(t*2.32);ctx.fillStyle=`rgba(90,255,160,${lamp})`;ctx.fillRect(0,0,WORLD_W,WORLD_H);if(Math.sin(t*.55)>.985){ctx.save();ctx.globalAlpha=.10;const sx=WORLD_W*.08,sy=WORLD_H*.30,sw=WORLD_W*.11,sh=WORLD_H*.18;ctx.drawImage(bg,sx,sy,sw,sh,sx+5,sy-2,sw,sh);ctx.restore();}}
+  if(w===9){for(const h of currentHazards.filter(h=>h.effect==='fire')){const pulse=.05+.04*Math.sin(t*5+h.cx);drawHazardShape(ctx,h,`rgba(255,104,35,${pulse})`);}ctx.fillStyle=`rgba(180,190,210,${.018+.012*Math.sin(t*1.3)})`;ctx.fillRect(0,0,WORLD_W,WORLD_H);}
   for(const f of envFX){
     if(f.kind==='dust'){ctx.globalAlpha=.12+.12*Math.sin(t+f.phase);ctx.fillStyle='#fff7d7';ctx.fillRect(f.x,f.y,f.size,f.size);}
     else if(f.kind==='heart'){const x=f.cx+Math.cos(f.a)*f.rx,y=f.cy+Math.sin(f.a)*f.ry;ctx.globalAlpha=.42;ctx.fillStyle='#f48caf';ctx.fillRect(x-f.size*.5,y-f.size*.25,f.size,f.size*.5);ctx.fillRect(x-f.size*.25,y-f.size*.5,f.size*.5,f.size);}
@@ -691,10 +765,17 @@ const VIRGIL_PROGRESS_LINES={
   5:'Гнев выдохся лишь на миг. Спуск продолжается.',
   6:'Ересь осталась наверху. Ниже — только поступки.',
   7:'Круг насилия пройден. Но бездна ещё не кончилась.',
-  8:'Обман пройден. Остался последний холодный круг.',
+  8:'Остался круг предательства. Не доверяй объектам: здесь даже парты лгут.',
   9:'Ты дошла до самого дна. Теперь можешь выйти отсюда.'
 };
 const PAUSE_PROGRESS_CACHE=new Map();
+function releasePauseProgressCache(keepSrc=null){
+  for(const key of [...PAUSE_PROGRESS_CACHE.keys()]) if(key!==keepSrc) PAUSE_PROGRESS_CACHE.delete(key);
+}
+function warmPauseProgressForWave(wave){
+  const src=PAUSE_PROGRESS_IMAGES.get(wave); if(!src)return;
+  releasePauseProgressCache(src); preloadPauseProgressImage(wave);
+}
 function preloadPauseProgressImage(wave){
   const src=PAUSE_PROGRESS_IMAGES.get(wave);
   if(!src)return Promise.resolve(null);
@@ -750,8 +831,10 @@ async function showInterwaveProgress(completedWave,onContinue){
   img.style.display='none';
   fallback.style.display='none';
   loading.style.display='block';
-  const loaded=await preloadPauseProgressImage(completedWave);
+  const nextBgPromise=completedWave<MAX_WAVES?loadBackground(completedWave+1):Promise.resolve(null);
+  const [loaded]=await Promise.all([preloadPauseProgressImage(completedWave),nextBgPromise]);
   if(ov.style.display==='none') return;
+  releasePauseProgressCache(PAUSE_PROGRESS_IMAGES.get(completedWave));
   if(loaded&&loaded.src){
     img.src=loaded.src;
     img.style.display='block';
@@ -768,21 +851,28 @@ async function showInterwaveProgress(completedWave,onContinue){
     done=true;
     btn.onclick=null;
     ov.style.display='none';
+    img.removeAttribute('src');
+    releasePauseProgressCache();
     onContinue?.();
   };
 }
 function beginInterWavePause(completedWave){
   if(interWaveActive||gameState!=='play') return;
-  interWaveActive=true; gameState='pause'; relStick(); enemyProjectiles=[]; projectiles=[]; spawnTimer=999; bossMode='none'; currentBoss=null; if(phaseBadge) phaseBadge.style.display='none';
+  interWaveActive=true; gameState='pause'; relStick();
+  enemyProjectiles=[]; projectiles=[]; groundWaves=[]; particles=[]; weaponEvents=[]; ghosts=[];
+  spawnTimer=999; bossMode='none'; currentBoss=null; if(phaseBadge) phaseBadge.style.display='none';
   showInterwaveProgress(completedWave,()=>transitionToWave(completedWave+1));
 }
 function transitionToWave(nextWave){
   if(nextWave>MAX_WAVES){interWaveActive=false;finishRun();return;}
-  const oldImg=bg;const def=envWaveDef(nextWave);const newImg=ENV_IMAGES.get(def?.wave)||ENV_IMAGES.get(Math.min(8,nextWave))||oldImg;envTransition={oldImg,newImg,t:0,duration:(ENV_SPEC.transition.background_crossfade_ms||1200)/1000,nextWave};
+  const oldImg=bg; const def=envWaveDef(nextWave);
+  const begin=(loaded)=>{const newImg=loaded||ENV_IMAGES.get(def?.wave)||oldImg;envTransition={oldImg,newImg,t:0,duration:(ENV_SPEC.transition.background_crossfade_ms||1200)/1000,nextWave};};
+  if(ENV_IMAGES.has(nextWave)) begin(ENV_IMAGES.get(nextWave));
+  else loadBackground(nextWave).then(begin);
 }
 function updateEnvironmentTransition(dt){
   if(!envTransition)return;envTransition.t+=dt;if(envTransition.t<envTransition.duration)return;const next=envTransition.nextWave;bg=envTransition.newImg||bg;envTransition=null;setWaveEnvironment(next,{immediate:false});const safe=nearestSafePoint(player.x,player.y,player.r);player.x=safe.x;player.y=safe.y;snapCameraToPlayer();hazardGraceTimer=(ENV_SPEC.transition.hazard_grace_after_transition_ms||750)/1000;
-  waveNumber=next;applyWaveHpBaseline(waveNumber);waveSpawned=0;wavePhaseIndex=0;phaseBreakState='none';phaseBreakTimer=0;lastSpawnByType={};momBossQueue=0;momBossSpawnTimer=0;spawnTimer=waveSpawnInterval();waveBossTriggered=false;waveRestTimer=0;waveBannerTimer=2.5;bossMomSpawned=bossDadSpawned=bossZavuchSpawned=false;bossMode='none';currentBoss=null;dadBossDead=false;zavuchBossDead=false;interWaveActive=false;gameState='play';onPhaseEnter(true);toast(`КРУГ ${waveNumber} · ${environmentName(waveNumber).toUpperCase()}`,'#f6e1a2',2.6);
+  waveNumber=next;applyWaveHpBaseline(waveNumber);if(waveNumber===9) toast('ПРЕДУПРЕЖДЕНИЕ: НЕ ДОВЕРЯЙ ОБЪЕКТАМ','#f6c2c2',3.2);waveSpawned=0;wavePhaseIndex=0;phaseBreakState='none';phaseBreakTimer=0;lastSpawnByType={};momBossQueue=0;momBossSpawnTimer=0;spawnTimer=waveSpawnInterval();waveBossTriggered=false;waveRestTimer=0;waveBannerTimer=2.5;bossMomSpawned=bossDadSpawned=bossZavuchSpawned=false;bossMode='none';currentBoss=null;dadBossDead=false;zavuchBossDead=false;wave9RespawnUsed=(waveNumber===9?false:wave9RespawnUsed);wave9RespawnPending=false;interWaveActive=false;gameState='play';onPhaseEnter(true);toast(`КРУГ ${waveNumber} · ${environmentName(waveNumber).toUpperCase()}`,'#f6e1a2',2.6);
 }
 
 const stickZone = document.getElementById('stickZone');
@@ -978,7 +1068,7 @@ recordsResetBtn.addEventListener('click',e=>{e.preventDefault(); if(confirm('О�
 restartBtn.textContent='ВЫБОР ВОЛНЫ';
 // UI buttons activate on release/click, not on the initial touch.
 // This avoids accidental actions while the player is beginning a swipe.
-restartBtn.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); if(gameState==='lose' || gameState==='win') showTestMenu(true); });
+restartBtn.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); if(gameState==='lose' && tryWave9Respawn()) return; if(gameState==='lose' || gameState==='win') showTestMenu(true); });
 waveMenuBtn.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); showTestMenu(true); });
 
 const touchMove = {x:0,y:0};
@@ -1415,8 +1505,12 @@ function showTestMenu(doReset=false){
   showMenuSection('waves'); renderTestWaveMenu();
 }
 function startTestWave(w){
-  if(!ENV_PRELOAD_DONE){toast('ЗАГРУЗКА КРУГОВ…','#d8cfaa',1.4);preloadBackgrounds().then(()=>startTestWave(w));return;}
   w=Math.max(1,Math.min(MAX_WAVES,w|0));
+  if(!ENV_IMAGES.has(w)){
+    toast('ЗАГРУЗКА КРУГА…','#d8cfaa',1.4);
+    loadBackground(w).then(img=>{if(!img)ENV_IMAGES.set(w,bg||fallbackBg);startTestWave(w);});
+    return;
+  }
   // IMPORTANT: wave selection is displayed above frontBlackout. Once a circle is chosen,
   // the menu disappears, so the blackout MUST disappear too or it covers the running canvas.
   const fb=document.getElementById('frontBlackout'); if(fb){fb.style.display='none';fb.style.opacity='1';}
@@ -1427,7 +1521,7 @@ function startTestWave(w){
   reset(); messages=[]; relStick();
   setWaveEnvironment(w,{immediate:true});
   testSelectedWave=w; waveNumber=w; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; spawnTimer=1.5;
-  wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; recordEligible=(w===1); recordSaved=false; runStartWave=w;
+  wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; recordEligible=(w===1); recordSaved=false; runStartWave=w; wave9RespawnUsed=false; wave9RespawnPending=false;
   bossMomSpawned=false; bossDadSpawned=false; bossZavuchSpawned=false; bossMode='none'; currentBoss=null;
   dadBossDead=false; zavuchBossDead=false;
   // Тест выбранной волны должен стартовать с тем же базовым HP, которое было бы накоплено
@@ -1511,8 +1605,10 @@ function reset(){
   };
   enemies=[]; enemyProjectiles=[]; projectiles=[]; particles=[]; drops=[]; flyTexts=[]; messages=[]; ghosts=[]; groundWaves=[]; weaponEvents=[]; recentDamageEvents=[]; if(damageMeter) damageMeter.style.display='none';
   spawnTimer=.65; elapsed=0; gameState='play'; bossMomSpawned=false; bossDadSpawned=false; bossZavuchSpawned=false; bossMode='none'; currentBoss=null; wavePressure=1; barkGlobalCd=0; totalKills=0;
-  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; recordEligible=false; recordSaved=false;
-  overlay.style.display='none'; cards.innerHTML=''; titleBar.style.display='none'; restartBtn.style.display='none';
+  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
+  interWaveActive=false; envTransition=null; hazardGraceTimer=0; envSlideVX=0; envSlideVY=0; envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
+  const interwave=document.getElementById('interwaveProgress'); if(interwave)interwave.style.display='none';
+  overlay.style.display='none'; cards.innerHTML=''; titleBar.style.display='none'; restartBtn.style.display='none'; restartBtn.textContent='ЕЩЁ УРОК';
   if(testMenu) testMenu.style.display='none';
   if(waveMenuBtn) waveMenuBtn.style.display='block';
   if(testBuildBadge) testBuildBadge.style.display='none';
@@ -1869,8 +1965,7 @@ function updateWaveSystem(dt){
                    (waveNumber!==5 || (bossDadSpawned && dadBossDead)) &&
                    (waveNumber!==6 || (bossZavuchSpawned && zavuchBossDead));
   if(waveSpawned>=waveTarget() && enemies.length===0 && bossesDone && bossMode==='none'){
-    if(waveNumber===MAX_WAVES) finishRun();
-    else if(!interWaveActive){ toast('КРУГ '+waveNumber+' ПРОЙДЕН','#aef3bd',1.8); beginInterWavePause(waveNumber); }
+    if(!interWaveActive){ toast('КРУГ '+waveNumber+' ПРОЙДЕН','#aef3bd',1.8); beginInterWavePause(waveNumber); }
   }
 }
 function addRespectHeart(n=1){
@@ -2713,7 +2808,7 @@ function triggerPhoneVoiceNote(){
   flyText(player.x,player.y-50,'ГОЛОСОВУХА ×8 МИН','#9feaff');
   particles.push({type:'phoneBlast',x:player.x,y:player.y-10,life:.34,max:.34,radius:30});
 }
-function damagePlayer(rawDmg){ if(player.parkour?.active) return; const pressured=rawDmg*enemyPressureDamageMult(); try{ window.TGGame?.impact(pressured>=3?'heavy':'medium'); }catch(_){} const dmg=Math.max(1, pressured-player.armor); player.hp=Math.max(0,player.hp-dmg); player.hurtFlash=.12; if(player.hp<=0){ saveRunRecord(false); gameState='lose'; if(phaseBadge)phaseBadge.style.display='none'; if(damageMeter)damageMeter.style.display='none'; restartBtn.style.display='block'; toast('Урок сорван','#ff9e9e',3); try{ window.TGGame?.notify('error'); }catch(_){} } }
+function damagePlayer(rawDmg){ if(player.parkour?.active) return; const pressured=rawDmg*enemyPressureDamageMult(); try{ window.TGGame?.impact(pressured>=3?'heavy':'medium'); }catch(_){} const dmg=Math.max(1, pressured-player.armor); player.hp=Math.max(0,player.hp-dmg); player.hurtFlash=.12; if(player.hp<=0){ handlePlayerDefeat(); } }
 function damageEnemy(e,dmg,knock=0,source='other'){
   if(!e||!e.alive) return;
   // HARD INVARIANT: phone damage can never leak onto spitters, seniors, moms, dads, zavuchs or bosses.
@@ -3292,8 +3387,12 @@ function draw(){
       ctx.strokeStyle='#bfeaff'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(5,p.r),0,Math.PI*2); ctx.stroke();
       ctx.fillStyle='#ffffff'; ctx.fillRect(p.x-2,p.y-2,4,4);
     } else {
-      ctx.fillStyle='#fff'; ctx.fillRect(p.x-5,p.y-3,10,6);
-      ctx.fillStyle='#d0d0d0'; ctx.fillRect(p.x-2,p.y-2,6,4);
+      if(chalkProjectileImg.complete && chalkProjectileImg.naturalWidth){
+        ctx.drawImage(chalkProjectileImg,p.x-5,p.y-3,10,6);
+      } else {
+        ctx.fillStyle='#fff'; ctx.fillRect(p.x-5,p.y-3,10,6);
+        ctx.fillStyle='#d0d0d0'; ctx.fillRect(p.x-2,p.y-2,6,4);
+      }
     }
     const pf=sourceWeaponFamily(p.source||p.type);if(pf)drawElementSpark(pf,p.x,p.y,Math.max(4,p.r||5));
   }
