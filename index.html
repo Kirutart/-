@@ -1597,6 +1597,7 @@ let wavePressure,barkGlobalCd=0,totalKills=0;
 let waveNumber=1,waveSpawned=0,waveRestTimer=0,waveBannerTimer=0,waveBossTriggered=false,dadBossDead=false,zavuchBossDead=false;
 let wavePhaseIndex=0,phaseBreakState='none',phaseBreakTimer=0,lastSpawnByType={},momBossQueue=0,momBossSpawnTimer=0;
 let levelUpQueue=[];
+let titleUiSequence=0;
 let recentDamageEvents=[];
 
 function reset(){
@@ -1620,7 +1621,7 @@ function reset(){
   };
   enemies=[]; enemyProjectiles=[]; projectiles=[]; particles=[]; drops=[]; flyTexts=[]; messages=[]; ghosts=[]; groundWaves=[]; weaponEvents=[]; recentDamageEvents=[]; if(damageMeter) damageMeter.style.display='none';
   spawnTimer=.65; elapsed=0; gameState='play'; bossMomSpawned=false; bossDadSpawned=false; bossZavuchSpawned=false; bossMode='none'; currentBoss=null; wavePressure=1; barkGlobalCd=0; totalKills=0;
-  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
+  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; titleUiSequence++; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
   interWaveActive=false; interWaveSequence++; envTransition=null; hazardGraceTimer=0; envSlideVX=0; envSlideVY=0; envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
   const interwave=document.getElementById('interwaveProgress'); if(interwave)interwave.style.display='none';
   overlay.style.display='none'; cards.innerHTML=''; titleBar.style.display='none'; restartBtn.style.display='none'; restartBtn.textContent='ЕЩЁ УРОК';
@@ -1794,7 +1795,7 @@ function spawnZavuchBoss(){
   toast('БОСС: ЗАВУЧ — ПРЯЧЬСЯ ЗА ПАРТОЙ', '#a8d8ff', 3.4);
   const sp=randomFloorEdgeSpawn(42); enemies.push(makeEnemy('zavuchBoss',sp.x,sp.y)); currentBoss='zavuch';
 }
-function title(text){ titleBar.textContent=text; titleBar.style.display='block'; setTimeout(()=>{ titleBar.style.display='none'; }, 2800); }
+function title(text){ const sequence=++titleUiSequence; titleBar.textContent=text; titleBar.style.display='block'; setTimeout(()=>{ if(sequence===titleUiSequence) titleBar.style.display='none'; }, 2800); }
 
 
 function perkRank(id){ return player.perkRanks[id]||0; }
@@ -2303,14 +2304,24 @@ function levelUp(){
     const focusLabel=(family && (player.weaponFocus||'chalk')===family && opt.kind==='weaponCore')?' · ОСНОВНОЕ ОРУЖИЕ':'';
     const masteryLabel=family&&opt.kind==='weaponCore'?` · ${weaponStageText(family)}`:'';
     card.innerHTML=`<div class="perkIcon">${perkIcon(opt.id)}</div><div class="perkText"><div class="perkMeta">${meta.label} · ${rankLabel}${focusLabel}${masteryLabel}</div><div class="perkTitle">${opt.title}</div><p class="perkDesc">${opt.desc}</p></div><div class="perkArrow">›</div>`;
-    card.onclick=()=>{
+    card.onclick=(e)=>{
+      e.preventDefault(); e.stopPropagation();
+      if(card.dataset.chosen==='1') return;
+      card.dataset.chosen='1';
+      cards.style.pointerEvents='none';
       try{ window.TGGame?.impact(opt.rare||opt.kind==='special'?'medium':'light'); }catch(_){}
-      applyUpgrade(opt); overlay.style.display='none';
+      applyUpgrade(opt);
       if(testStartPending){
         testBuildBadge.textContent=`ТЕСТ: ВОЛНА ${testSelectedWave} · ${levelUpQueue.length} ПРОКАЧЕК ОСТАЛОСЬ`;
       }
-      if(levelUpQueue.length){ setTimeout(levelUp,0); }
-      else if(testStartPending) beginSelectedTestWave();
+      if(levelUpQueue.length){
+        cards.style.pointerEvents='auto';
+        levelUp();
+        return;
+      }
+      overlay.style.display='none';
+      cards.style.pointerEvents='auto';
+      if(testStartPending) beginSelectedTestWave();
       else gameState='play';
     };
     cards.appendChild(card);
@@ -3557,6 +3568,9 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   const testMenuEl=document.getElementById('testMenu');
   const introToggle=document.getElementById('introEnabledToggle');
   let storyIndex=0, locked=false, existingMenuOpenedAt=0;
+  let frontSequence=0,storyFrameSequence=0,bootExitStarted=false,storyExitStarted=false;
+  let bootHoldTimer=0,bootExitTimer=0,storyFrameTimer=0,storyExitTimer=0,unlockTimer=0;
+  const BOOT_FADE_IN_MS=900,BOOT_HOLD_MS=1700,BOOT_FADE_OUT_MS=900;
 
   const frames=[
     {img:STORY_IMAGES[0],speaker:'',html:'В начале жизненного пути я оказалась в школе.<span class="storyTime">Понедельник. 6:59.</span>'},
@@ -3565,6 +3579,16 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   ];
   function introEnabled(){ try{ return localStorage.getItem('posledniy_urok_intro_enabled')!=='0'; }catch(_){return true;} }
   function setIntroEnabled(v){ try{localStorage.setItem('posledniy_urok_intro_enabled',v?'1':'0');}catch(_){} }
+  function clearFrontTimers(){
+    clearTimeout(bootHoldTimer);clearTimeout(bootExitTimer);clearTimeout(storyFrameTimer);clearTimeout(storyExitTimer);clearTimeout(unlockTimer);
+    bootHoldTimer=bootExitTimer=storyFrameTimer=storyExitTimer=unlockTimer=0;
+  }
+  function beginFrontState(){
+    frontSequence++;storyFrameSequence++;clearFrontTimers();
+    locked=false;bootExitStarted=false;storyExitStarted=false;
+    story.classList.remove('storySwap');
+    return frontSequence;
+  }
   function holdGameBehindFront(){
     try{ gameState='menu'; if(typeof relStick==='function')relStick(); }catch(_){}
     if(blackout){blackout.style.display='block';blackout.style.opacity='1';}
@@ -3572,30 +3596,71 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   function releaseGameBackdrop(){ if(blackout)blackout.style.display='none'; }
   function hideAllFront(){boot.style.display='none';story.style.display='none';menu.style.display='none';settings.style.display='none';boot.setAttribute('aria-hidden','true');story.setAttribute('aria-hidden','true');menu.setAttribute('aria-hidden','true');settings.setAttribute('aria-hidden','true');}
   function showMenu(){
-    hideAllFront(); holdGameBehindFront();
+    beginFrontState();hideAllFront();holdGameBehindFront();
     try{ if(testMenuEl)testMenuEl.style.display='none'; if(typeof relStick==='function')relStick(); }catch(_){}
     menu.style.display='flex';menu.setAttribute('aria-hidden','false');
   }
-  function setFrame(i){
-    storyIndex=i; const f=frames[i];
+  function applyStoryFrame(i){
+    storyIndex=i;const f=frames[i];
+    storyImage.src=f.img;storySpeaker.textContent=f.speaker||'';storyBody.className='storyBody'+(f.dialogue?' dialogueLines':'');storyBody.innerHTML=f.html;storyCounter.textContent=(i+1)+' / '+frames.length;
+  }
+  function setFrame(i,{immediate=false}={}){
+    const sequence=++storyFrameSequence;
+    clearTimeout(storyFrameTimer);
+    if(immediate){
+      story.classList.remove('storySwap');
+      applyStoryFrame(i);
+      return;
+    }
     story.classList.add('storySwap');
-    setTimeout(()=>{
-      storyImage.src=f.img;storySpeaker.textContent=f.speaker||'';storyBody.className='storyBody'+(f.dialogue?' dialogueLines':'');storyBody.innerHTML=f.html;storyCounter.textContent=(i+1)+' / '+frames.length;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>story.classList.remove('storySwap')));
+    storyFrameTimer=setTimeout(()=>{
+      if(sequence!==storyFrameSequence||story.style.display==='none') return;
+      applyStoryFrame(i);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        if(sequence===storyFrameSequence&&story.style.display!=='none') story.classList.remove('storySwap');
+      }));
     },820);
   }
-  function showStory(){hideAllFront();holdGameBehindFront();story.style.display='block';story.setAttribute('aria-hidden','false');story.style.opacity='1';setFrame(0);}
+  function showStory(){
+    beginFrontState();hideAllFront();holdGameBehindFront();
+    story.style.transition='none';story.style.opacity='1';
+    setFrame(0,{immediate:true});
+    story.style.display='block';story.setAttribute('aria-hidden','false');
+  }
+  function finishStory(sequence=frontSequence){
+    if(sequence!==frontSequence||storyExitStarted)return;
+    storyExitStarted=true;locked=true;storyFrameSequence++;clearTimeout(storyFrameTimer);clearTimeout(unlockTimer);
+    story.classList.remove('storySwap');story.style.transition='opacity 1.15s ease';story.style.opacity='0';
+    storyExitTimer=setTimeout(()=>{if(sequence===frontSequence)showMenu();},1180);
+  }
   function nextStory(){
-    if(locked)return;locked=true;setTimeout(()=>locked=false,1750);
+    if(locked||storyExitStarted)return;
+    const sequence=frontSequence;
+    locked=true;clearTimeout(unlockTimer);unlockTimer=setTimeout(()=>{if(sequence===frontSequence)locked=false;},1750);
     try{window.TGGame&&window.TGGame.selection&&window.TGGame.selection();}catch(_){}
     if(storyIndex<frames.length-1) setFrame(storyIndex+1);
-    else{story.style.transition='opacity 1.15s ease';story.style.opacity='0';setTimeout(()=>{story.style.opacity='1';showMenu();},1180);}
+    else finishStory(sequence);
+  }
+  function finishBoot(sequence=frontSequence){
+    if(sequence!==frontSequence||bootExitStarted)return;
+    bootExitStarted=true;clearTimeout(bootHoldTimer);
+    boot.style.transition='opacity '+BOOT_FADE_OUT_MS+'ms ease';boot.style.opacity='0';
+    bootExitTimer=setTimeout(()=>{
+      if(sequence!==frontSequence)return;
+      introEnabled()?showStory():showMenu();
+    },BOOT_FADE_OUT_MS+30);
   }
   function showBoot(){
-    hideAllFront();holdGameBehindFront();boot.style.display='flex';boot.setAttribute('aria-hidden','false');boot.style.opacity='0';boot.style.transition='opacity 1.25s ease';requestAnimationFrame(()=>boot.style.opacity='1');
-    setTimeout(()=>{boot.style.opacity='0';setTimeout(()=>{introEnabled()?showStory():showMenu();},1220);},2250);
+    const sequence=beginFrontState();
+    hideAllFront();holdGameBehindFront();
+    boot.style.display='flex';boot.setAttribute('aria-hidden','false');boot.style.transition='none';boot.style.opacity='0';
+    void boot.offsetWidth;
+    boot.style.transition='opacity '+BOOT_FADE_IN_MS+'ms ease';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(sequence===frontSequence&&!bootExitStarted)boot.style.opacity='1';}));
+    bootHoldTimer=setTimeout(()=>finishBoot(sequence),BOOT_FADE_IN_MS+BOOT_HOLD_MS);
   }
   function openExistingMenu(section){
+    beginFrontState();
     existingMenuOpenedAt=performance.now();
     hideAllFront();
     try{ if(typeof ensureTestMenuTopLayer==='function') ensureTestMenuTopLayer(); }catch(_){}
@@ -3620,11 +3685,11 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
     }
   }
   function startNewGame(){
-    hideAllFront();releaseGameBackdrop();
+    beginFrontState();hideAllFront();releaseGameBackdrop();
     try{startTestWave(1);}catch(e){console.error(e);showMenu();}
   }
   story.addEventListener('pointerup',e=>{e.preventDefault();nextStory();},{passive:false});
-  boot.addEventListener('pointerup',e=>{e.preventDefault();boot.style.opacity='0';setTimeout(()=>{introEnabled()?showStory():showMenu();},1180);},{passive:false});
+  boot.addEventListener('pointerup',e=>{e.preventDefault();finishBoot(frontSequence);},{passive:false});
   document.getElementById('newGameBtn').addEventListener('click',startNewGame);
   document.getElementById('mainRecordsBtn').addEventListener('click',()=>openExistingMenu('records'));
   document.getElementById('mainWaveBtn').addEventListener('click',()=>openExistingMenu('waves'));
