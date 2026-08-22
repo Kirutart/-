@@ -268,6 +268,85 @@ body.tg-miniapp #titleBar{top:calc(var(--game-safe-top) + 22px)}
 }
 #recordsSection .recordsTable th{top:0;background:#111912}
 #recordsSection .recordsReset{background:rgba(42,20,17,.82)}
+
+/* v7.03: records use their own supplied 841×1870 interface artwork. */
+#testPanel.recordsMode{
+  aspect-ratio:841/1870;
+  background-image:url('assets/ui/records-background-v1-841x1870.png');
+}
+.recordsMode #testKicker{top:5.2%;left:10%;right:10%}
+.recordsMode #tgUserBadge,.tg-miniapp .recordsMode #tgUserBadge{top:8.2%;left:12%;right:12%}
+.recordsMode #testTitle{
+  left:3.55%;right:12%;top:18.48%;height:3.62%;
+  font-size:clamp(16px,4.55cqw,27px);
+}
+.recordsMode #mainMenuBackBtn{right:2.95%;top:18.72%;width:7.15%}
+.recordsMode #menuActions{
+  left:3.55%;right:3.8%;top:37.12%;height:4.05%;gap:1.85%;
+}
+.recordsMode #recordsSection{
+  position:absolute;inset:0;display:block;padding:0;overflow:visible;
+  border:0;border-radius:0;background:none;box-shadow:none;
+}
+.recordsMode #recordsContent{position:absolute;inset:0;pointer-events:none}
+.recordsMode .recordsBlock{position:absolute;left:3.55%;right:3.8%;pointer-events:auto}
+.recordsMode .recordsGlobalBlock{top:42.42%;height:18.95%}
+.recordsMode .recordsLocalBlock{top:62.82%;height:12.15%}
+.recordsMode .recordsHeading,.recordsMode .recordsSubHeading{
+  position:absolute;left:3%;right:3%;top:0;height:10.8%;margin:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#d7bd70;font:700 clamp(9px,2.25cqw,13px)/1 var(--display-font);
+  letter-spacing:.08em;text-align:center;text-shadow:0 1px 2px #000;
+}
+.recordsMode .recordsLocalBlock .recordsSubHeading{height:15.5%}
+.recordsMode #globalRecordsMount,.recordsMode .recordsLocalMount{
+  position:absolute;left:0;right:0;bottom:0;overflow-x:hidden;overflow-y:auto;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;
+  scrollbar-width:thin;scrollbar-color:rgba(192,154,70,.58) transparent;
+}
+.recordsMode #globalRecordsMount{top:13.55%}
+.recordsMode .recordsLocalMount{top:20.5%}
+.recordsMode .recordsTable{
+  width:100%;min-width:100%;border-collapse:collapse;table-layout:fixed;background:transparent;
+  color:#c8c7b7;font:clamp(7px,1.45cqw,8px)/1.05 Consolas,monospace;
+}
+.recordsMode .recordsTable th,.recordsMode .recordsTable td{
+  height:5.95cqw;padding:0 .7cqw;border:0;text-align:center;box-sizing:border-box;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 1px #000;
+}
+.recordsMode .recordsLocalBlock .recordsTable th,.recordsMode .recordsLocalBlock .recordsTable td{height:5.25cqw}
+.recordsMode .recordsTable th{
+  position:sticky;top:0;z-index:2;background:rgba(14,20,13,.88);color:#d8c17b;
+  font-family:var(--display-font);font-weight:700;letter-spacing:.025em;
+}
+.recordsMode .recordsGlobalBlock .recordsTable th:nth-child(1),.recordsMode .recordsGlobalBlock .recordsTable td:nth-child(1){width:10.4%}
+.recordsMode .recordsGlobalBlock .recordsTable th:nth-child(2),.recordsMode .recordsGlobalBlock .recordsTable td:nth-child(2){width:32.3%}
+.recordsMode .recordsGlobalBlock .recordsTable th:nth-child(n+3),.recordsMode .recordsGlobalBlock .recordsTable td:nth-child(n+3){width:11.46%}
+.recordsMode .recordsLocalBlock .recordsTable th:nth-child(1),.recordsMode .recordsLocalBlock .recordsTable td:nth-child(1){width:10.5%}
+.recordsMode .recordsLocalBlock .recordsTable th:nth-child(2),.recordsMode .recordsLocalBlock .recordsTable td:nth-child(2){width:32.8%}
+.recordsMode .recordsLocalBlock .recordsTable th:nth-child(n+3),.recordsMode .recordsLocalBlock .recordsTable td:nth-child(n+3){width:14.18%}
+.recordsMode .recordsName{max-width:none;text-align:center!important}
+.recordsMode .recordsMe{background:rgba(112,163,124,.12)}
+.recordsMode .recordsEmpty,.recordsMode .recordsStatus{
+  height:100%;margin:0;padding:0 5%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;
+  color:#999f91;font:clamp(7px,1.55cqw,9px)/1.35 Consolas,monospace;text-align:center;
+}
+.recordsMode .recordsError{color:#dca49c}
+.recordsMode .recordsTestNote{
+  position:absolute;left:5.2%;right:5.2%;top:76.35%;height:11.65%;margin:0;padding:3.2% 4.5%;
+  display:flex;align-items:center;justify-content:center;box-sizing:border-box;
+  color:#a8aa9b;font:clamp(7px,1.6cqw,9px)/1.42 Consolas,monospace;text-align:center;text-shadow:0 1px 2px #000;
+  pointer-events:none;
+}
+.recordsMode #recordsResetBtn{
+  position:absolute;left:8.35%;right:8.65%;top:89.85%;width:auto;height:4.75%;min-height:0;margin:0;padding:0 5%;
+  border:0;border-radius:0;background:rgba(72,24,15,.08);color:#dbc38a;
+  font:700 clamp(10px,2.65cqw,16px)/1 var(--display-font);letter-spacing:.06em;text-shadow:0 2px 2px #000;
+  cursor:pointer;transition:color .14s ease,background-color .14s ease,transform .08s ease;
+}
+.recordsMode #recordsResetBtn:hover{color:#f0d79b;background:rgba(133,52,30,.1)}
+.recordsMode #recordsResetBtn:active{transform:scale(.986)}
+.recordsMode #recordsResetBtn:focus-visible{outline:2px solid #e1c371;outline-offset:-4px}
 @media(max-width:380px){#testWaveGrid{grid-template-columns:1fr}.testWaveBtn{min-height:0}#testTitle{font-size:clamp(16px,4.9cqw,23px)}}
 @media(max-height:700px){.storyBody.dialogueLines{line-height:1.28}.storyLine{margin-top:.35em}}
 
@@ -1020,6 +1099,7 @@ const upgradeLevelText = document.getElementById('upgradeLevelText');
 const upgradeHeal = document.getElementById('upgradeHeal');
 const upgradeFooter = document.getElementById('upgradeFooter');
 const testMenu = document.getElementById('testMenu');
+const testPanel = document.getElementById('testPanel');
 // IMPORTANT: #testMenu is authored inside #touchUI (z-index:20), which creates a stacking context.
 // frontBlackout sits at z-index:219, so without re-parenting the whole records/wave menu is hidden behind black.
 // Always move it to <body> before showing it so its own z-index can actually win.
@@ -1162,7 +1242,7 @@ function saveRunRecord(win=false){
 async function renderRecords(){
   const locals=loadRecords();
   const cfg=leaderboardConfig();
-  recordsContent.innerHTML='<div class="recordsHeading">🌍 ОБЩИЙ РЕЙТИНГ</div><div id="globalRecordsMount" class="recordsStatus">'+(cfg.configured?'Синхронизация результата…':'Не настроен общий рейтинг.')+'</div><div class="recordsSubHeading">👤 МОИ ЗАБЕГИ</div>'+localRecordsTableHtml(locals);
+  recordsContent.innerHTML='<div class="recordsBlock recordsGlobalBlock"><div class="recordsHeading">🌍 ОБЩИЙ РЕЙТИНГ</div><div id="globalRecordsMount" class="recordsStatus">'+(cfg.configured?'Синхронизация результата…':'Не настроен общий рейтинг.')+'</div></div><div class="recordsBlock recordsLocalBlock"><div class="recordsSubHeading">👤 МОИ ЗАБЕГИ</div><div class="recordsLocalMount">'+localRecordsTableHtml(locals)+'</div></div>';
   if(!cfg.configured || globalRecordsLoading) return;
   globalRecordsLoading=true;
   const mount=()=>document.getElementById('globalRecordsMount');
@@ -1190,11 +1270,14 @@ async function renderRecords(){
 }
 function showMenuSection(which){
   const rec=which==='records';
+  if(testPanel) testPanel.classList.toggle('recordsMode',rec);
   if(wavesSection) wavesSection.style.display=rec?'none':'block';
   if(recordsSection) recordsSection.style.display=rec?'block':'none';
   if(wavesTabBtn) wavesTabBtn.classList.toggle('active',!rec);
   if(recordsTabBtn) recordsTabBtn.classList.toggle('active',rec);
   if(testTitle) testTitle.textContent=rec?'ТАБЛИЦА РЕКОРДОВ':'ВЫБЕРИ КРУГ';
+  if(testMenu) testMenu.scrollTop=0;
+  if(recordsSection) recordsSection.scrollTop=0;
   if(rec) renderRecords();
 }
 wavesTabBtn.addEventListener('click',e=>{e.preventDefault();showMenuSection('waves');});
