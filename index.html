@@ -347,6 +347,65 @@ body.tg-miniapp #titleBar{top:calc(var(--game-safe-top) + 22px)}
 .recordsMode #recordsResetBtn:hover{color:#f0d79b;background:rgba(133,52,30,.1)}
 .recordsMode #recordsResetBtn:active{transform:scale(.986)}
 .recordsMode #recordsResetBtn:focus-visible{outline:2px solid #e1c371;outline-offset:-4px}
+
+/* v7.04: artwork is the only interface chrome; interactive overlays stay text-only. */
+#testPanel::after{display:none}
+#tgUserBadge,body.tg-miniapp #tgUserBadge{
+  padding:0;border:0;border-radius:0;background:none;
+}
+#mainMenuBackBtn,#mainMenuBackBtn:hover{
+  border:0;background:none;box-shadow:none;
+}
+#mainMenuBackBtn:focus-visible{outline:0;color:#f3d994}
+.menuActionBtn,.menuActionBtn:hover,.menuActionBtn.active{
+  border:0;background:none;box-shadow:none;filter:none;
+}
+.menuActionBtn:focus-visible{outline:0;color:#f0d588}
+#testDesc{
+  left:10%;right:10%;top:16.25%;height:5.2%;justify-content:center;
+  font-size:clamp(9px,2.05cqw,12px);line-height:1.35;text-align:center;
+}
+#testWaveGrid{
+  left:8.5%;right:8.5%;top:0;height:100%;display:block;
+}
+.testWaveBtn,.testWaveBtn:hover,.testWaveBtn.bossWave,.testWaveBtn:last-child{
+  position:absolute;left:0;right:0;width:100%;height:4.55%;min-height:0;margin:0;padding:0;
+  display:block;border:0;border-radius:0;background:none;box-shadow:none;filter:none;overflow:visible;
+}
+.testWaveBtn.touchPressed,.testWaveBtn:active{background:none;border:0;box-shadow:none;filter:none;transform:scale(.992)}
+.testWaveBtn:focus-visible{outline:0}.testWaveBtn:focus-visible .testWaveNum{color:#f0d891}
+.testWaveBtn:nth-child(1){top:39.42%;height:4.05%}
+.testWaveBtn:nth-child(2){top:44.72%}
+.testWaveBtn:nth-child(3){top:50.66%}
+.testWaveBtn:nth-child(4){top:56.53%}
+.testWaveBtn:nth-child(5){top:62.45%}
+.testWaveBtn:nth-child(6){top:68.36%}
+.testWaveBtn:nth-child(7){top:74.08%;height:4.65%}
+.testWaveBtn:nth-child(8){top:79.98%;height:4.7%}
+.testWaveBtn:nth-child(9){top:86.02%;height:4.8%}
+.testWaveNum{
+  position:absolute;left:3%;right:3%;top:34%;transform:translateY(-50%);margin:0;
+  text-align:center;
+}
+.testWaveMeta{
+  position:absolute;left:3%;right:3%;top:68%;transform:translateY(-50%);
+  max-width:none;text-align:center;
+}
+#testNote{display:none}
+.recordsMode #recordsSection,.recordsMode #recordsContent,.recordsMode .recordsBlock,
+.recordsMode #globalRecordsMount,.recordsMode .recordsLocalMount{
+  border-color:transparent;background:none;box-shadow:none;
+}
+.recordsMode .recordsTable th,.recordsMode .recordsTable td,
+.recordsMode .recordsTable th,.recordsMode .recordsMe{
+  border-color:transparent;background:none;box-shadow:none;
+}
+#testPanel.recordsMode #recordsSection .recordsTable th{background:none}
+.recordsMode .recordsWin,.recordsMode .recordsLose{color:#c8c7b7}
+.recordsMode #recordsResetBtn,.recordsMode #recordsResetBtn:hover{
+  border:0;background:none;box-shadow:none;
+}
+.recordsMode #recordsResetBtn:focus-visible{outline:0;color:#f0d79b}
 @media(max-width:380px){#testWaveGrid{grid-template-columns:1fr}.testWaveBtn{min-height:0}#testTitle{font-size:clamp(16px,4.9cqw,23px)}}
 @media(max-height:700px){.storyBody.dialogueLines{line-height:1.28}.storyLine{margin-top:.35em}}
 
@@ -428,9 +487,9 @@ window.LEADERBOARD_CONFIG = {
       <h1 id="testTitle">ВЫБЕРИ КРУГ</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">КРУГИ</button><button id="recordsTabBtn" type="button" class="menuActionBtn">РЕКОРДЫ</button></div>
       <div id="wavesSection">
-        <p id="testDesc">Получишь с нуля расчётный опыт за идеальное прохождение всех предыдущих волн. Сначала сам прокачаешь каждый заработанный уровень, потом выбранная волна стартует. <b>Листай свайпом; волна выбирается только после отпускания пальца.</b></p>
+        <p id="testDesc">Статистика засчитывается только при прохождении с 1 круга</p>
         <div id="testWaveGrid"></div>
-        <div id="testNote">Каждая волна теперь идёт фазами: новые типы подключаются постепенно, между фазами есть реальная передышка. Рекорды засчитываются только при старте с 1-й волны.</div>
+        <div id="testNote" aria-hidden="true"></div>
       </div>
       <div id="recordsSection"><div id="recordsContent"></div><div class="recordsTestNote">В общий рейтинг попадают только полноценные забеги с 1-й волны. Тестовые старты со 2–10-й волны не отправляются.</div><button id="recordsResetBtn" class="recordsReset" type="button">ОЧИСТИТЬ МОИ ЛОКАЛЬНЫЕ ЗАБЕГИ</button></div>
     </div>
@@ -1242,7 +1301,7 @@ function saveRunRecord(win=false){
 async function renderRecords(){
   const locals=loadRecords();
   const cfg=leaderboardConfig();
-  recordsContent.innerHTML='<div class="recordsBlock recordsGlobalBlock"><div class="recordsHeading">🌍 ОБЩИЙ РЕЙТИНГ</div><div id="globalRecordsMount" class="recordsStatus">'+(cfg.configured?'Синхронизация результата…':'Не настроен общий рейтинг.')+'</div></div><div class="recordsBlock recordsLocalBlock"><div class="recordsSubHeading">👤 МОИ ЗАБЕГИ</div><div class="recordsLocalMount">'+localRecordsTableHtml(locals)+'</div></div>';
+  recordsContent.innerHTML='<div class="recordsBlock recordsGlobalBlock"><div class="recordsHeading">ОБЩИЙ РЕЙТИНГ</div><div id="globalRecordsMount" class="recordsStatus">'+(cfg.configured?'Синхронизация результата…':'Не настроен общий рейтинг.')+'</div></div><div class="recordsBlock recordsLocalBlock"><div class="recordsSubHeading">МОИ ЗАБЕГИ</div><div class="recordsLocalMount">'+localRecordsTableHtml(locals)+'</div></div>';
   if(!cfg.configured || globalRecordsLoading) return;
   globalRecordsLoading=true;
   const mount=()=>document.getElementById('globalRecordsMount');
