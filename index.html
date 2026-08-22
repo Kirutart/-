@@ -120,7 +120,16 @@ body.tg-miniapp #titleBar{top:calc(var(--game-safe-top) + 22px)}
 
 
 /* === INTRO + MAIN MENU v1 === */
-:root{--menu-gold:#d5bb73;--menu-ink:#070908;--menu-panel:#101513;--menu-muted:#9d9a8c}
+:root{
+  --menu-gold:#d5bb73;
+  --menu-ink:#070908;
+  --menu-panel:#101513;
+  --menu-muted:#9d9a8c;
+  /* Font hooks: connect a future @font-face here without rebuilding the menu. */
+  --menu-title-font:Georgia,'Times New Roman',serif;
+  --menu-button-font:Georgia,'Times New Roman',serif;
+  --menu-meta-font:Consolas,monospace;
+}
 #frontBlackout{position:fixed;inset:0;z-index:219;background:#000;display:none;opacity:1;pointer-events:none}
 #bootSplash,#storyIntro,#hellMenu,#settingsModal{position:fixed;inset:0;z-index:220;box-sizing:border-box}
 #bootSplash{display:none;align-items:center;justify-content:center;background:#020303;overflow:hidden;touch-action:manipulation}
@@ -134,22 +143,26 @@ body.tg-miniapp #titleBar{top:calc(var(--game-safe-top) + 22px)}
 #storyDialog{transition:opacity .62s ease}
 #storyIntro.storySwap #storyDialog{opacity:0}
 #storyShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,transparent 42%,rgba(0,0,0,.18) 67%,rgba(0,0,0,.78) 100%);pointer-events:none}
-#storyDialog{position:absolute;left:max(14px,calc(var(--game-safe-left,0px) + 10px));right:max(14px,calc(var(--game-safe-right,0px) + 10px));bottom:max(18px,calc(var(--game-safe-bottom,0px) + 12px));padding:17px 18px 19px;background:linear-gradient(145deg,rgba(9,13,13,.94),rgba(15,13,11,.96));border:1px solid rgba(214,187,112,.76);box-shadow:0 8px 28px #000b,0 0 0 1px #000 inset;border-radius:5px;color:#ece6d4;font:15px/1.42 Georgia,'Times New Roman',serif;min-height:84px;box-sizing:border-box}
-#storyDialog::before,#storyDialog::after{content:'';position:absolute;width:13px;height:13px;border-color:#c6a75e;opacity:.85}#storyDialog::before{left:5px;top:5px;border-left:2px solid;border-top:2px solid}#storyDialog::after{right:5px;bottom:5px;border-right:2px solid;border-bottom:2px solid}
-.storySpeaker{display:block;margin-bottom:6px;color:#c9aa60;font:700 11px/1.2 Consolas,monospace;letter-spacing:.13em;text-transform:uppercase}.storyBody{display:block}.storyBody.dialogueLines{font-size:13px;line-height:1.38}.storyLine{display:block;margin-top:7px}.storyLine:first-child{margin-top:0}.storyWho{color:#c9aa60;font-family:Consolas,monospace;font-weight:700}.storyTime{display:block;margin-top:12px;color:#aaa18d;font:11px/1.2 Consolas,monospace;letter-spacing:.08em}
-#storyTap{position:absolute;right:17px;bottom:11px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #d4b45f;animation:storyArrow 1.1s steps(2,end) infinite}@keyframes storyArrow{50%{transform:translateY(3px);opacity:.45}}
+#storyDialog{position:absolute;left:50%;right:auto;bottom:max(10px,calc(var(--game-safe-bottom,0px) + 7px));width:min(1100px,112vh,calc(100vw - var(--game-safe-left,0px) - var(--game-safe-right,0px) - 18px));aspect-ratio:1916/821;transform:translateX(-50%);display:flex;flex-direction:column;justify-content:center;padding:7.5% 9.3%;background:linear-gradient(145deg,rgba(6,10,7,.88),rgba(12,12,8,.91)) center/86% 73% no-repeat,url('assets/ui/story-dialog-frame-v1.png') center/100% 100% no-repeat;border:0;box-shadow:none;filter:drop-shadow(0 8px 16px #000b);border-radius:0;color:#f0e8d3;font-family:var(--menu-title-font);font-size:clamp(13px,2.1cqw,21px);line-height:1.4;box-sizing:border-box;container-type:inline-size}
+#storyDialog::before,#storyDialog::after{content:none}
+.storySpeaker{display:block;margin-bottom:.55em;color:#d6b966;font-family:var(--menu-meta-font);font-size:clamp(9px,1.5cqw,15px);font-weight:700;line-height:1.2;letter-spacing:.13em;text-transform:uppercase}.storyBody{display:block}.storyBody.dialogueLines{font-size:clamp(11px,1.75cqw,17px);line-height:1.36}.storyLine{display:block;margin-top:.5em}.storyLine:first-child{margin-top:0}.storyWho{color:#d6b966;font-family:var(--menu-meta-font);font-weight:700}.storyTime{display:block;margin-top:.75em;color:#bcb29a;font-family:var(--menu-meta-font);font-size:clamp(8px,1.35cqw,13px);line-height:1.2;letter-spacing:.08em}
+#storyTap{position:absolute;right:7.2%;bottom:11.5%;width:0;height:0;border-left:clamp(4px,.8cqw,7px) solid transparent;border-right:clamp(4px,.8cqw,7px) solid transparent;border-top:clamp(6px,1.15cqw,10px) solid #d4b45f;animation:storyArrow 1.1s steps(2,end) infinite}@keyframes storyArrow{50%{transform:translateY(3px);opacity:.45}}
 #storyCounter{position:absolute;right:17px;top:max(16px,calc(var(--game-safe-top,0px) + 8px));padding:5px 8px;border:1px solid #ffffff21;background:#0008;border-radius:7px;color:#a49c84;font:9px Consolas,monospace;letter-spacing:.14em}
-#hellMenu{display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 52%,#090c0b 0%,#020303 47%,#000 100%);overflow:hidden;padding:max(70px,var(--game-safe-top,70px)) 24px max(34px,var(--game-safe-bottom,34px));touch-action:manipulation}
-#hellMenu::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.008) 3px 4px);pointer-events:none}
-#menuAtmosphere{position:absolute;inset:0;overflow:hidden;pointer-events:none}.ember{position:absolute;width:3px;height:3px;background:#c56b31;box-shadow:0 0 6px #9e3d17;border-radius:1px;opacity:.24;animation:emberFloat var(--dur,7s) ease-in-out infinite alternate}@keyframes emberFloat{from{transform:translate(0,8px);opacity:.10}45%{opacity:.46}to{transform:translate(var(--dx,9px),-16px);opacity:.14}}
+#hellMenu{display:none;align-items:center;justify-content:center;background:#070906;overflow:hidden;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#hellMenu::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#182015 0%,#070906 70%,#000 100%);pointer-events:none}
+#menuAtmosphere{display:none}.ember{position:absolute;width:3px;height:3px;background:#c56b31;box-shadow:0 0 6px #9e3d17;border-radius:1px;opacity:.24;animation:emberFloat var(--dur,7s) ease-in-out infinite alternate}@keyframes emberFloat{from{transform:translate(0,8px);opacity:.10}45%{opacity:.46}to{transform:translate(var(--dx,9px),-16px);opacity:.14}}
 .darkEyes{position:absolute;display:flex;gap:8px;opacity:.34;animation:eyesDrift var(--drift,5s) ease-in-out infinite alternate}.darkEyes i{display:block;width:7px;height:3px;background:#bb6c39;box-shadow:0 0 8px #b14e23;border-radius:50%;transform-origin:center;animation:eyeBlink var(--blink,4.6s) steps(1,end) infinite}.darkEyes.e2 i{background:#a99b63;box-shadow:0 0 7px #7c7042}.darkEyes.e3 i{background:#a24d35;box-shadow:0 0 9px #7f251e}@keyframes eyeBlink{0%,44%,48%,100%{transform:scaleY(1)}45%,47%{transform:scaleY(.06)}}@keyframes eyesDrift{from{transform:translate(-4px,-3px) rotate(-1deg)}to{transform:translate(5px,4px) rotate(1deg)}}
-#mainMenuInner{position:relative;width:min(88vw,430px);display:flex;flex-direction:column;align-items:stretch;gap:4px;z-index:2}
-#mainMenuTitle{text-align:center;color:#d3c39a;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:clamp(35px,8vw,55px);letter-spacing:.06em;text-transform:uppercase;margin:0 0 33px;text-shadow:0 3px 0 #000,0 0 16px rgba(142,93,50,.18)}
-.mainMenuBtn{width:100%;min-height:55px;border:0;border-bottom:1px solid #ffffff16;background:transparent;color:#c7b991;font:700 17px/1 Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.mainMenuBtn:active{color:#f0d477;background:#ffffff05}.mainMenuBtn:last-child{border-bottom:0}
-#menuVersion{text-align:center;margin-top:25px;color:#514f47;font:9px Consolas,monospace;letter-spacing:.14em}
+#mainMenuInner{position:relative;z-index:2;width:min(100vw,56.25vh);height:min(100vh,177.7778vw);aspect-ratio:9/16;flex:none;overflow:hidden;container-type:size;background:url('assets/ui/main-menu-background-v1-1440x2560.png') center/100% 100% no-repeat;filter:drop-shadow(0 0 24px #000);font-synthesis:none}
+#mainMenuTitle{position:absolute;left:10%;right:10%;top:10.5%;margin:0;text-align:center;color:#e5cf8a;font-family:var(--menu-title-font);font-weight:700;font-size:clamp(34px,9.5cqw,68px);line-height:.92;letter-spacing:.035em;text-transform:uppercase;text-shadow:0 .035em 0 #0b0d08,0 0 .28em rgba(215,176,83,.23)}
+#mainMenuTitle span{display:block;white-space:nowrap}
+#mainMenuTitle::after{content:'ОДНА ШКОЛА · ОДИН ПУТЬ ВНИЗ';display:block;margin-top:1.2em;color:#aa955e;font-family:var(--menu-meta-font);font-size:clamp(7px,2.25cqw,15px);font-weight:400;line-height:1.2;letter-spacing:.17em;text-shadow:0 1px 1px #000}
+.mainMenuBtn{position:absolute;left:14.65%;width:70.7%;height:8.65%;margin:0;padding:0 5%;border:0;border-radius:1.2cqw;background:rgba(3,8,4,.03);color:#e1cf94;font-family:var(--menu-button-font);font-size:clamp(17px,5.25cqw,36px);font-weight:700;line-height:1;letter-spacing:.09em;text-transform:uppercase;text-align:center;text-shadow:0 .07em .05em #000,0 0 .4em rgba(218,181,89,.12);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .14s ease,background-color .14s ease,filter .14s ease,transform .08s ease}
+#newGameBtn{top:46.05%}#mainRecordsBtn{top:56.78%}#mainWaveBtn{top:67.52%}#mainSettingsBtn{top:78.24%}
+.mainMenuBtn:hover{color:#f4df9f;background:rgba(190,151,61,.07);filter:brightness(1.08)}.mainMenuBtn:active{color:#fff0b2;background:rgba(225,183,78,.12);transform:scale(.988)}.mainMenuBtn:focus-visible{outline:clamp(1px,.45cqw,3px) solid #f3d77f;outline-offset:clamp(-7px,-1.15cqw,-3px)}
+#menuVersion{position:absolute;left:23%;right:23%;top:92.5%;margin:0;text-align:center;color:#b8a36b;font-family:var(--menu-meta-font);font-size:clamp(7px,1.9cqw,13px);line-height:1.2;letter-spacing:.13em;text-transform:uppercase;text-shadow:0 1px 1px #000;pointer-events:none}
 #settingsModal{display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.82);padding:24px;z-index:240;touch-action:manipulation}.settingsPanel{width:min(91vw,430px);border:1px solid #8d7a4f;background:#101412;color:#ddd6c4;padding:22px;border-radius:8px;box-shadow:0 15px 40px #000}.settingsTitle{margin:0 0 19px;color:#d6bc72;font:700 21px Georgia,serif;letter-spacing:.08em;text-transform:uppercase}.settingsRow{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 0;border-top:1px solid #ffffff12;font:13px/1.35 Consolas,monospace}.settingsRow:first-of-type{border-top:0}.settingsToggle{width:24px;height:24px;accent-color:#bda25d}.settingsBtn{width:100%;margin-top:11px;min-height:46px;border:1px solid #746543;background:#1b1d19;color:#d8ca9f;font:700 12px Consolas,monospace;letter-spacing:.07em;border-radius:5px;touch-action:manipulation}.settingsBtn.secondary{border-color:#ffffff23;color:#aaa;background:#0d0f0e}
 #mainMenuBackBtn{position:sticky;top:0;float:right;z-index:8;margin:-7px -3px 6px 8px;width:38px;height:38px;border:1px solid #ffffff2b;border-radius:50%;background:#0a0d0ccf;color:#c9bc94;font:22px/1 Consolas,monospace;touch-action:manipulation}
-@media(max-height:700px){#mainMenuTitle{margin-bottom:18px}.mainMenuBtn{min-height:46px;font-size:15px}#storyDialog{font-size:13px;padding:13px 15px 16px}.storyBody.dialogueLines{font-size:11.5px}}
+@media(max-height:700px){.storyBody.dialogueLines{line-height:1.28}.storyLine{margin-top:.35em}}
 
 </style>
 <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
@@ -179,7 +192,7 @@ window.LEADERBOARD_CONFIG = {
     <div class="darkEyes e3" style="left:27%;bottom:18%;--blink:6.1s;--drift:7s;transform:scale(.62)"><i></i><i></i></div>
   </div>
   <div id="mainMenuInner">
-    <div id="mainMenuTitle">Последний урок</div>
+    <div id="mainMenuTitle"><span>Последний</span><span>урок</span></div>
     <button id="newGameBtn" class="mainMenuBtn" type="button">Новая игра</button>
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
@@ -1597,6 +1610,7 @@ let wavePressure,barkGlobalCd=0,totalKills=0;
 let waveNumber=1,waveSpawned=0,waveRestTimer=0,waveBannerTimer=0,waveBossTriggered=false,dadBossDead=false,zavuchBossDead=false;
 let wavePhaseIndex=0,phaseBreakState='none',phaseBreakTimer=0,lastSpawnByType={},momBossQueue=0,momBossSpawnTimer=0;
 let levelUpQueue=[];
+let titleUiSequence=0;
 let recentDamageEvents=[];
 
 function reset(){
@@ -1620,7 +1634,7 @@ function reset(){
   };
   enemies=[]; enemyProjectiles=[]; projectiles=[]; particles=[]; drops=[]; flyTexts=[]; messages=[]; ghosts=[]; groundWaves=[]; weaponEvents=[]; recentDamageEvents=[]; if(damageMeter) damageMeter.style.display='none';
   spawnTimer=.65; elapsed=0; gameState='play'; bossMomSpawned=false; bossDadSpawned=false; bossZavuchSpawned=false; bossMode='none'; currentBoss=null; wavePressure=1; barkGlobalCd=0; totalKills=0;
-  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
+  waveNumber=1; waveSpawned=0; waveRestTimer=0; waveBannerTimer=2.4; waveBossTriggered=false; dadBossDead=false; zavuchBossDead=false; wavePhaseIndex=0; phaseBreakState='none'; phaseBreakTimer=0; lastSpawnByType={}; momBossQueue=0; momBossSpawnTimer=0; levelUpQueue=[]; titleUiSequence++; recordEligible=false; recordSaved=false; wave9RespawnUsed=false; wave9RespawnPending=false;
   interWaveActive=false; interWaveSequence++; envTransition=null; hazardGraceTimer=0; envSlideVX=0; envSlideVY=0; envBurn={active:false,inside:false,remaining:0,tick:0,dps:3};
   const interwave=document.getElementById('interwaveProgress'); if(interwave)interwave.style.display='none';
   overlay.style.display='none'; cards.innerHTML=''; titleBar.style.display='none'; restartBtn.style.display='none'; restartBtn.textContent='ЕЩЁ УРОК';
@@ -1794,7 +1808,7 @@ function spawnZavuchBoss(){
   toast('БОСС: ЗАВУЧ — ПРЯЧЬСЯ ЗА ПАРТОЙ', '#a8d8ff', 3.4);
   const sp=randomFloorEdgeSpawn(42); enemies.push(makeEnemy('zavuchBoss',sp.x,sp.y)); currentBoss='zavuch';
 }
-function title(text){ titleBar.textContent=text; titleBar.style.display='block'; setTimeout(()=>{ titleBar.style.display='none'; }, 2800); }
+function title(text){ const sequence=++titleUiSequence; titleBar.textContent=text; titleBar.style.display='block'; setTimeout(()=>{ if(sequence===titleUiSequence) titleBar.style.display='none'; }, 2800); }
 
 
 function perkRank(id){ return player.perkRanks[id]||0; }
@@ -2303,14 +2317,24 @@ function levelUp(){
     const focusLabel=(family && (player.weaponFocus||'chalk')===family && opt.kind==='weaponCore')?' · ОСНОВНОЕ ОРУЖИЕ':'';
     const masteryLabel=family&&opt.kind==='weaponCore'?` · ${weaponStageText(family)}`:'';
     card.innerHTML=`<div class="perkIcon">${perkIcon(opt.id)}</div><div class="perkText"><div class="perkMeta">${meta.label} · ${rankLabel}${focusLabel}${masteryLabel}</div><div class="perkTitle">${opt.title}</div><p class="perkDesc">${opt.desc}</p></div><div class="perkArrow">›</div>`;
-    card.onclick=()=>{
+    card.onclick=(e)=>{
+      e.preventDefault(); e.stopPropagation();
+      if(card.dataset.chosen==='1') return;
+      card.dataset.chosen='1';
+      cards.style.pointerEvents='none';
       try{ window.TGGame?.impact(opt.rare||opt.kind==='special'?'medium':'light'); }catch(_){}
-      applyUpgrade(opt); overlay.style.display='none';
+      applyUpgrade(opt);
       if(testStartPending){
         testBuildBadge.textContent=`ТЕСТ: ВОЛНА ${testSelectedWave} · ${levelUpQueue.length} ПРОКАЧЕК ОСТАЛОСЬ`;
       }
-      if(levelUpQueue.length){ setTimeout(levelUp,0); }
-      else if(testStartPending) beginSelectedTestWave();
+      if(levelUpQueue.length){
+        cards.style.pointerEvents='auto';
+        levelUp();
+        return;
+      }
+      overlay.style.display='none';
+      cards.style.pointerEvents='auto';
+      if(testStartPending) beginSelectedTestWave();
       else gameState='play';
     };
     cards.appendChild(card);
@@ -3557,6 +3581,9 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   const testMenuEl=document.getElementById('testMenu');
   const introToggle=document.getElementById('introEnabledToggle');
   let storyIndex=0, locked=false, existingMenuOpenedAt=0;
+  let frontSequence=0,storyFrameSequence=0,bootExitStarted=false,storyExitStarted=false;
+  let bootHoldTimer=0,bootExitTimer=0,storyFrameTimer=0,storyExitTimer=0,unlockTimer=0;
+  const BOOT_FADE_IN_MS=900,BOOT_HOLD_MS=1700,BOOT_FADE_OUT_MS=900;
 
   const frames=[
     {img:STORY_IMAGES[0],speaker:'',html:'В начале жизненного пути я оказалась в школе.<span class="storyTime">Понедельник. 6:59.</span>'},
@@ -3565,6 +3592,16 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   ];
   function introEnabled(){ try{ return localStorage.getItem('posledniy_urok_intro_enabled')!=='0'; }catch(_){return true;} }
   function setIntroEnabled(v){ try{localStorage.setItem('posledniy_urok_intro_enabled',v?'1':'0');}catch(_){} }
+  function clearFrontTimers(){
+    clearTimeout(bootHoldTimer);clearTimeout(bootExitTimer);clearTimeout(storyFrameTimer);clearTimeout(storyExitTimer);clearTimeout(unlockTimer);
+    bootHoldTimer=bootExitTimer=storyFrameTimer=storyExitTimer=unlockTimer=0;
+  }
+  function beginFrontState(){
+    frontSequence++;storyFrameSequence++;clearFrontTimers();
+    locked=false;bootExitStarted=false;storyExitStarted=false;
+    story.classList.remove('storySwap');
+    return frontSequence;
+  }
   function holdGameBehindFront(){
     try{ gameState='menu'; if(typeof relStick==='function')relStick(); }catch(_){}
     if(blackout){blackout.style.display='block';blackout.style.opacity='1';}
@@ -3572,30 +3609,71 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
   function releaseGameBackdrop(){ if(blackout)blackout.style.display='none'; }
   function hideAllFront(){boot.style.display='none';story.style.display='none';menu.style.display='none';settings.style.display='none';boot.setAttribute('aria-hidden','true');story.setAttribute('aria-hidden','true');menu.setAttribute('aria-hidden','true');settings.setAttribute('aria-hidden','true');}
   function showMenu(){
-    hideAllFront(); holdGameBehindFront();
+    beginFrontState();hideAllFront();holdGameBehindFront();
     try{ if(testMenuEl)testMenuEl.style.display='none'; if(typeof relStick==='function')relStick(); }catch(_){}
     menu.style.display='flex';menu.setAttribute('aria-hidden','false');
   }
-  function setFrame(i){
-    storyIndex=i; const f=frames[i];
+  function applyStoryFrame(i){
+    storyIndex=i;const f=frames[i];
+    storyImage.src=f.img;storySpeaker.textContent=f.speaker||'';storyBody.className='storyBody'+(f.dialogue?' dialogueLines':'');storyBody.innerHTML=f.html;storyCounter.textContent=(i+1)+' / '+frames.length;
+  }
+  function setFrame(i,{immediate=false}={}){
+    const sequence=++storyFrameSequence;
+    clearTimeout(storyFrameTimer);
+    if(immediate){
+      story.classList.remove('storySwap');
+      applyStoryFrame(i);
+      return;
+    }
     story.classList.add('storySwap');
-    setTimeout(()=>{
-      storyImage.src=f.img;storySpeaker.textContent=f.speaker||'';storyBody.className='storyBody'+(f.dialogue?' dialogueLines':'');storyBody.innerHTML=f.html;storyCounter.textContent=(i+1)+' / '+frames.length;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>story.classList.remove('storySwap')));
+    storyFrameTimer=setTimeout(()=>{
+      if(sequence!==storyFrameSequence||story.style.display==='none') return;
+      applyStoryFrame(i);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        if(sequence===storyFrameSequence&&story.style.display!=='none') story.classList.remove('storySwap');
+      }));
     },820);
   }
-  function showStory(){hideAllFront();holdGameBehindFront();story.style.display='block';story.setAttribute('aria-hidden','false');story.style.opacity='1';setFrame(0);}
+  function showStory(){
+    beginFrontState();hideAllFront();holdGameBehindFront();
+    story.style.transition='none';story.style.opacity='1';
+    setFrame(0,{immediate:true});
+    story.style.display='block';story.setAttribute('aria-hidden','false');
+  }
+  function finishStory(sequence=frontSequence){
+    if(sequence!==frontSequence||storyExitStarted)return;
+    storyExitStarted=true;locked=true;storyFrameSequence++;clearTimeout(storyFrameTimer);clearTimeout(unlockTimer);
+    story.classList.remove('storySwap');story.style.transition='opacity 1.15s ease';story.style.opacity='0';
+    storyExitTimer=setTimeout(()=>{if(sequence===frontSequence)showMenu();},1180);
+  }
   function nextStory(){
-    if(locked)return;locked=true;setTimeout(()=>locked=false,1750);
+    if(locked||storyExitStarted)return;
+    const sequence=frontSequence;
+    locked=true;clearTimeout(unlockTimer);unlockTimer=setTimeout(()=>{if(sequence===frontSequence)locked=false;},1750);
     try{window.TGGame&&window.TGGame.selection&&window.TGGame.selection();}catch(_){}
     if(storyIndex<frames.length-1) setFrame(storyIndex+1);
-    else{story.style.transition='opacity 1.15s ease';story.style.opacity='0';setTimeout(()=>{story.style.opacity='1';showMenu();},1180);}
+    else finishStory(sequence);
+  }
+  function finishBoot(sequence=frontSequence){
+    if(sequence!==frontSequence||bootExitStarted)return;
+    bootExitStarted=true;clearTimeout(bootHoldTimer);
+    boot.style.transition='opacity '+BOOT_FADE_OUT_MS+'ms ease';boot.style.opacity='0';
+    bootExitTimer=setTimeout(()=>{
+      if(sequence!==frontSequence)return;
+      introEnabled()?showStory():showMenu();
+    },BOOT_FADE_OUT_MS+30);
   }
   function showBoot(){
-    hideAllFront();holdGameBehindFront();boot.style.display='flex';boot.setAttribute('aria-hidden','false');boot.style.opacity='0';boot.style.transition='opacity 1.25s ease';requestAnimationFrame(()=>boot.style.opacity='1');
-    setTimeout(()=>{boot.style.opacity='0';setTimeout(()=>{introEnabled()?showStory():showMenu();},1220);},2250);
+    const sequence=beginFrontState();
+    hideAllFront();holdGameBehindFront();
+    boot.style.display='flex';boot.setAttribute('aria-hidden','false');boot.style.transition='none';boot.style.opacity='0';
+    void boot.offsetWidth;
+    boot.style.transition='opacity '+BOOT_FADE_IN_MS+'ms ease';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(sequence===frontSequence&&!bootExitStarted)boot.style.opacity='1';}));
+    bootHoldTimer=setTimeout(()=>finishBoot(sequence),BOOT_FADE_IN_MS+BOOT_HOLD_MS);
   }
   function openExistingMenu(section){
+    beginFrontState();
     existingMenuOpenedAt=performance.now();
     hideAllFront();
     try{ if(typeof ensureTestMenuTopLayer==='function') ensureTestMenuTopLayer(); }catch(_){}
@@ -3620,11 +3698,11 @@ let last=performance.now(); function loop(t){ if(document.hidden){last=t;request
     }
   }
   function startNewGame(){
-    hideAllFront();releaseGameBackdrop();
+    beginFrontState();hideAllFront();releaseGameBackdrop();
     try{startTestWave(1);}catch(e){console.error(e);showMenu();}
   }
   story.addEventListener('pointerup',e=>{e.preventDefault();nextStory();},{passive:false});
-  boot.addEventListener('pointerup',e=>{e.preventDefault();boot.style.opacity='0';setTimeout(()=>{introEnabled()?showStory():showMenu();},1180);},{passive:false});
+  boot.addEventListener('pointerup',e=>{e.preventDefault();finishBoot(frontSequence);},{passive:false});
   document.getElementById('newGameBtn').addEventListener('click',startNewGame);
   document.getElementById('mainRecordsBtn').addEventListener('click',()=>openExistingMenu('records'));
   document.getElementById('mainWaveBtn').addEventListener('click',()=>openExistingMenu('waves'));
