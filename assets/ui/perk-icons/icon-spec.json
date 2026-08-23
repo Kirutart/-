@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "format": "webp",
+  "width": 192,
+  "height": 192,
+  "colorSpace": "sRGB",
+  "background": "transparent",
+  "palette": {
+    "inkBlack": "#050806",
+    "panelBlack": "#101513",
+    "forestDeep": "#111912",
+    "forestMuted": "#273326",
+    "goldShadow": "#806F46",
+    "goldAged": "#B99A53",
+    "goldLight": "#E4CA7D",
+    "bone": "#DDD3B0",
+    "mutedStone": "#959B8D",
+    "bloodMuted": "#6F2824",
+    "blueDeep": "#17282D"
+  },
+  "paletteRules": {
+    "outsidePaletteAllowed": false,
+    "dominant": ["inkBlack", "panelBlack", "goldAged", "bone"],
+    "secondary": ["forestDeep", "forestMuted", "goldShadow", "goldLight", "mutedStone"],
+    "rareAccentOnly": ["bloodMuted", "blueDeep"],
+    "forbidden": ["neon", "purple", "cyan", "cleanDigitalGradient", "pureWhite"]
+  },
+  "rasterStyle": {
+    "workingWidth": 96,
+    "workingHeight": 96,
+    "workingContentBox": 76,
+    "upscale": 2,
+    "resampling": "nearest-neighbor",
+    "edgeStyle": "slightly-pixelated",
+    "texture": ["aged-metal", "dark-painted-surface", "subtle-grain", "restrained-dither"],
+    "ornamentStyle": "same-lightweight-gothic-botanical-ornament-as-story-dialog-frame",
+    "lighting": "matte-with-soft-aged-gold-highlight",
+    "glow": "gold-only-subtle",
+    "gradient": "textural-lighting-only"
+  },
+  "contentBox": {
+    "width": 152,
+    "height": 152,
+    "margin": 20,
+    "alignment": "center"
+  },
+  "encoding": {
+    "lossless": true,
+    "method": 6,
+    "preserveAlpha": true,
+    "stripMetadata": true
+  },
+  "weightBytes": {
+    "targetMin": 4096,
+    "targetMax": 12288,
+    "hardMax": 20480
+  },
+  "fileNaming": "<perk-id>.webp",
+  "expectedUniqueFiles": 77,
+  "aliases": {
+    "phone_unlock": "phone_count",
+    "beltw_unlock": "beltw_dmg",
+    "bell_unlock": "bell_stun",
+    "sponge_unlock": "sponge_bounce",
+    "director_unlock": "director_power"
+  }
+}

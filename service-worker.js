@@ -1,10 +1,20 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.05`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.06`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
   './assets/ui/records-background-v2-841x1870.webp',
   './assets/ui/story-dialog-frame-v2.webp',
+  './assets/ui/perk-icons/chalk_count.webp',
+  './assets/ui/perk-icons/chalk_dmg.webp',
+  './assets/ui/perk-icons/chalk_cd.webp',
+  './assets/ui/perk-icons/chalk_pierce.webp',
+  './assets/ui/perk-icons/chalk_ricochet.webp',
+  './assets/ui/perk-icons/chalk_split.webp',
+  './assets/ui/perk-icons/chalk_control.webp',
+  './assets/ui/perk-icons/chalk_ghost.webp',
+  './assets/ui/perk-icons/chalk_spirit.webp',
+  './assets/ui/perk-icons/ghost_panic.webp',
   './assets/story/intro-01.webp',
   './assets/story/intro-02.webp',
   './assets/story/intro-03.webp',
