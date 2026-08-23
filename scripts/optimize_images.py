@@ -78,6 +78,7 @@ def main() -> None:
     ui_jobs = (
         ("main-menu-background-v1-1440x2560.png", "main-menu-background-v2-1080x1920.webp", (1080, 1920), 88),
         ("records-background-v1-841x1870.png", "records-background-v2-841x1870.webp", None, 90),
+        ("perk-upgrade-background-v1-841x1870.png", "perk-upgrade-background-v2-841x1870.webp", None, 90),
         ("story-dialog-frame-v1.png", "story-dialog-frame-v2.webp", None, 92),
     )
     for source_name, target_name, max_size, quality in ui_jobs:
