@@ -561,7 +561,7 @@ window.LEADERBOARD_CONFIG = {
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
     <button id="mainSettingsBtn" class="mainMenuBtn" type="button">Настройки</button>
-    <div id="menuVersion">TG · v7.08 · Девять кругов</div>
+    <div id="menuVersion">TG · v7.09 · Девять кругов</div>
   </div>
 </div>
 <div id="settingsModal" aria-hidden="true">
@@ -601,7 +601,7 @@ window.LEADERBOARD_CONFIG = {
   <div id="titleBar"></div>
   <div id="testMenu">
     <div id="testPanel"><button id="mainMenuBackBtn" type="button" aria-label="В главное меню">×</button>
-      <div id="testKicker">Последний урок · TG · Circles v7.08</div>
+      <div id="testKicker">Последний урок · TG · Circles v7.09</div>
       <div id="tgUserBadge">Telegram подключается…</div>
       <h1 id="testTitle">Выбери круг</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">Круги</button><button id="recordsTabBtn" type="button" class="menuActionBtn">Рекорды</button></div>
@@ -2481,7 +2481,7 @@ function perkCategory(id){
   if(id.startsWith('parkour_') || id==='weapon_double') return {cls:'cat-rare',label:'Редкий / синергия'};
   return {cls:'cat-passive',label:'Пассивка'};
 }
-const RASTER_PERK_ICON_IDS=new Set(['chalk_count','chalk_dmg','chalk_cd','chalk_pierce','chalk_ricochet','chalk_split','chalk_control','chalk_ghost','chalk_spirit','ghost_panic']);
+const RASTER_PERK_ICON_IDS=new Set(['chalk_count','chalk_dmg','chalk_cd','chalk_pierce','chalk_ricochet','chalk_split','chalk_control','chalk_ghost','chalk_spirit','ghost_panic','ghost_hysteria','chalk_surprise']);
 function perkIcon(id){
   const iconAlias={phone_unlock:'phone_count',beltw_unlock:'beltw_dmg',bell_unlock:'bell_stun',sponge_unlock:'sponge_bounce',director_unlock:'director_power'};id=iconAlias[id]||id;
   if(RASTER_PERK_ICON_IDS.has(id)) return `<img class="perkIconImage" src="assets/ui/perk-icons/${id}.webp" width="192" height="192" alt="" aria-hidden="true" draggable="false" decoding="async">`;

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.08`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.09`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
@@ -16,6 +16,8 @@ const APP_SHELL = [
   './assets/ui/perk-icons/chalk_ghost.webp',
   './assets/ui/perk-icons/chalk_spirit.webp',
   './assets/ui/perk-icons/ghost_panic.webp',
+  './assets/ui/perk-icons/ghost_hysteria.webp',
+  './assets/ui/perk-icons/chalk_surprise.webp',
   './assets/story/intro-01.webp',
   './assets/story/intro-02.webp',
   './assets/story/intro-03.webp',
