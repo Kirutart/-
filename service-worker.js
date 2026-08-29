@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.09`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.10`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
@@ -22,6 +22,7 @@ const APP_SHELL = [
   './assets/story/intro-02.webp',
   './assets/story/intro-03.webp',
   './assets/game/backgrounds/01_limbo.webp',
+  './assets/game/characters/sprites/teacher-human-walk-v1.webp',
   './assets/game/interwave/pause_01_limbo.webp',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Regular.ttf',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Bold.ttf',
