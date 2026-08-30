@@ -561,7 +561,7 @@ window.LEADERBOARD_CONFIG = {
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
     <button id="mainSettingsBtn" class="mainMenuBtn" type="button">Настройки</button>
-    <div id="menuVersion">TG · v7.11 · Девять кругов</div>
+    <div id="menuVersion">TG · v7.12 · Девять кругов</div>
   </div>
 </div>
 <div id="settingsModal" aria-hidden="true">
@@ -601,7 +601,7 @@ window.LEADERBOARD_CONFIG = {
   <div id="titleBar"></div>
   <div id="testMenu">
     <div id="testPanel"><button id="mainMenuBackBtn" type="button" aria-label="В главное меню">×</button>
-      <div id="testKicker">Последний урок · TG · Circles v7.11</div>
+      <div id="testKicker">Последний урок · TG · Circles v7.12</div>
       <div id="tgUserBadge">Telegram подключается…</div>
       <h1 id="testTitle">Выбери круг</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">Круги</button><button id="recordsTabBtn" type="button" class="menuActionBtn">Рекорды</button></div>
@@ -3707,8 +3707,15 @@ function teacherDirectionRow(){
   if(Math.abs(dx)>Math.abs(dy)) return dx<0?1:2;
   return dy<0?3:0;
 }
+function teacherWalkImage(){
+  if((player.level||1)>=7) return teacherDemon3WalkImg;
+  if((player.level||1)>=4) return teacherDemon2WalkImg;
+  return teacherWalkImg;
+}
 function drawTeacher(x,y){
-  if(!(teacherWalkImg.complete&&teacherWalkImg.naturalWidth)){
+  let walkImg=teacherWalkImage();
+  if(!(walkImg.complete&&walkImg.naturalWidth)) walkImg=teacherWalkImg;
+  if(!(walkImg.complete&&walkImg.naturalWidth)){
     drawTeacherFallback(x,y);
     return;
   }
@@ -3734,7 +3741,7 @@ function drawTeacher(x,y){
   ctx.translate(Math.round(x),Math.round(y-lift));
   if(player.knockdown>0){ctx.rotate(-1.22);ctx.translate(-4,7);}else ctx.rotate(lean);
   ctx.scale(stretch,1/stretch*1.03);
-  ctx.drawImage(teacherWalkImg,frame*96,row*96,96,96,-35,-44,70,70);
+  ctx.drawImage(walkImg,frame*96,row*96,96,96,-35,-44,70,70);
   ctx.restore();
 }
 function drawEnemy(e){

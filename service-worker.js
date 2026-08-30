@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.11`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.12`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
