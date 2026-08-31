@@ -561,7 +561,7 @@ window.LEADERBOARD_CONFIG = {
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
     <button id="mainSettingsBtn" class="mainMenuBtn" type="button">Настройки</button>
-    <div id="menuVersion">TG · v7.14 · Девять кругов</div>
+    <div id="menuVersion">TG · v7.15 · Девять кругов</div>
   </div>
 </div>
 <div id="settingsModal" aria-hidden="true">
@@ -601,7 +601,7 @@ window.LEADERBOARD_CONFIG = {
   <div id="titleBar"></div>
   <div id="testMenu">
     <div id="testPanel"><button id="mainMenuBackBtn" type="button" aria-label="В главное меню">×</button>
-      <div id="testKicker">Последний урок · TG · Circles v7.14</div>
+      <div id="testKicker">Последний урок · TG · Circles v7.15</div>
       <div id="tgUserBadge">Telegram подключается…</div>
       <h1 id="testTitle">Выбери круг</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">Круги</button><button id="recordsTabBtn" type="button" class="menuActionBtn">Рекорды</button></div>
@@ -809,6 +809,10 @@ window.DEBUG_COLLISIONS=false;
 let floorPoly = [{x:52,y:209},{x:889,y:209},{x:889,y:1647},{x:52,y:1647}];
 let floorBounds = {x:52,y:209,w:837,h:1438};
 let obstacles = [];
+// Общая линия стыка стен с полом у всех девяти фонов — трапеция в перспективе.
+const ARENA_FLOOR={topY:.164,bottomY:.963,topLeft:.102,topRight:.898,bottomLeft:.038,bottomRight:.962};
+const DESK_COLLISION_PAD=8;
+const SOLID_COLLISION_PAD=4;
 
 function environmentName(w=currentEnvironmentWave){
   return ENV_BY_WAVE.get(Math.max(1,Math.min(MAX_WAVES,w)))?.circle||'Круг';
@@ -819,12 +823,13 @@ function envWaveDef(w){
 }
 const ENV_LOAD_PROMISES=new Map();
 const ENV_FAILED_BACKGROUNDS=new Set();
-function loadBackground(wave){
+function loadBackground(wave,{retry=false}={}){
   const w=Math.max(1,Math.min(MAX_WAVES,wave|0));
   const def=ENV_BY_WAVE.get(w);
   if(!def?.background) return Promise.resolve(null);
   if(ENV_IMAGES.has(w)) return Promise.resolve(ENV_IMAGES.get(w));
-  if(ENV_FAILED_BACKGROUNDS.has(w)) return Promise.resolve(null);
+  if(retry) ENV_FAILED_BACKGROUNDS.delete(w);
+  else if(ENV_FAILED_BACKGROUNDS.has(w)) return Promise.resolve(null);
   if(ENV_LOAD_PROMISES.has(w)) return ENV_LOAD_PROMISES.get(w);
   const p=new Promise(resolve=>{
     const img=new Image(); img.decoding='async'; img.fetchPriority=w===1?'high':'auto'; let settled=false;
@@ -852,7 +857,11 @@ function preloadBackgrounds(){
 }
 preloadBackgrounds();
 
-function nRect(r){return {...r,x:r.x*WORLD_W,y:r.y*WORLD_H,w:r.w*WORLD_W,h:r.h*WORLD_H,kind:r.id||'solid',jumpable:/desk|table/i.test(r.id||'')};}
+function nRect(r){
+  const jumpable=/desk|table/i.test(r.id||'');
+  const pad=jumpable?DESK_COLLISION_PAD:SOLID_COLLISION_PAD;
+  return {...r,x:r.x*WORLD_W-pad,y:r.y*WORLD_H-pad,w:r.w*WORLD_W+pad*2,h:r.h*WORLD_H+pad*2,kind:r.id||'solid',jumpable,collisionPad:pad};
+}
 function nEllipse(e){return {...e,cx:e.cx*WORLD_W,cy:e.cy*WORLD_H,rx:e.rx*WORLD_W,ry:e.ry*WORLD_H,kind:e.id||'ellipse',shape:'ellipse',jumpable:false};}
 function normalizeSolid(s){return s.shape==='ellipse'?nEllipse(s):nRect(s);}
 function normalizeHazard(h){
@@ -860,14 +869,18 @@ function normalizeHazard(h){
   return {...h,x:h.x*WORLD_W,y:h.y*WORLD_H,w:h.w*WORLD_W,h:h.h*WORLD_H};
 }
 function applyArenaBounds(){
-  const a=ENV_SPEC.arena_bounds;
-  floorBounds={x:a.left*WORLD_W,y:a.top*WORLD_H,w:(a.right-a.left)*WORLD_W,h:(a.bottom-a.top)*WORLD_H};
+  const a=ARENA_FLOOR;
+  const topY=a.topY*WORLD_H,bottomY=a.bottomY*WORLD_H;
+  const topLeft=a.topLeft*WORLD_W,topRight=a.topRight*WORLD_W;
+  const bottomLeft=a.bottomLeft*WORLD_W,bottomRight=a.bottomRight*WORLD_W;
   floorPoly=[
-    {x:floorBounds.x,y:floorBounds.y},
-    {x:floorBounds.x+floorBounds.w,y:floorBounds.y},
-    {x:floorBounds.x+floorBounds.w,y:floorBounds.y+floorBounds.h},
-    {x:floorBounds.x,y:floorBounds.y+floorBounds.h}
+    {x:topLeft,y:topY},
+    {x:topRight,y:topY},
+    {x:bottomRight,y:bottomY},
+    {x:bottomLeft,y:bottomY}
   ];
+  const minX=Math.min(topLeft,bottomLeft),maxX=Math.max(topRight,bottomRight);
+  floorBounds={x:minX,y:topY,w:maxX-minX,h:bottomY-topY};
 }
 applyArenaBounds();
 
@@ -960,10 +973,16 @@ function pushOutOfEllipse(obj,o){
   obj.x=o.cx+Math.cos(a)*rx;obj.y=o.cy+Math.sin(a)*ry;return true;
 }
 function resolveEnvironmentCollisions(obj){
-  const b=floorBounds;
-  obj.x=clamp(obj.x,b.x+obj.r,b.x+b.w-obj.r);
-  obj.y=clamp(obj.y,b.y+obj.r,b.y+b.h-obj.r);
+  const r=Math.max(0,Number(obj.r)||0),top=floorPoly[0].y,bottom=floorPoly[3].y;
+  const wall=wallClearanceFor(obj);
+  obj.y=clamp(obj.y,top+wall.top,bottom-wall.bottom);
+  const limits=floorHorizontalLimits(obj.y,wall.side);
+  obj.x=clamp(obj.x,limits.left,limits.right);
   for(let pass=0;pass<3;pass++){let changed=false;for(const o of obstacles){if(!circleObstacleCollision(obj.x,obj.y,obj.r,o))continue;changed=(o.shape==='ellipse'?pushOutOfEllipse(obj,o):pushOutOfRect(obj,o))||changed;}if(!changed)break;}
+  // Выталкивание из мебели не имеет права отправить объект обратно за стену.
+  obj.y=clamp(obj.y,top+wall.top,bottom-wall.bottom);
+  const finalLimits=floorHorizontalLimits(obj.y,wall.side);
+  obj.x=clamp(obj.x,finalLimits.left,finalLimits.right);
 }
 function nearestSafePoint(x,y,r){
   const probe={x,y,r};resolveEnvironmentCollisions(probe);if(canStandAt(probe.x,probe.y,r,false))return probe;
@@ -1264,10 +1283,10 @@ function transitionToWave(nextWave){
   const oldImg=bg; const def=envWaveDef(nextWave);
   const begin=(loaded)=>{const newImg=loaded||ENV_IMAGES.get(def?.wave)||oldImg;envTransition={oldImg,newImg,t:0,duration:(ENV_SPEC.transition.background_crossfade_ms||1200)/1000,nextWave};};
   if(ENV_IMAGES.has(nextWave)) begin(ENV_IMAGES.get(nextWave));
-  else loadBackground(nextWave).then(begin);
+  else loadBackground(nextWave).then(loaded=>loaded||loadBackground(nextWave,{retry:true})).then(begin);
 }
 function updateEnvironmentTransition(dt){
-  if(!envTransition)return;envTransition.t+=dt;if(envTransition.t<envTransition.duration)return;const next=envTransition.nextWave;bg=envTransition.newImg||bg;envTransition=null;setWaveEnvironment(next,{immediate:false});const safe=nearestSafePoint(player.x,player.y,player.r);player.x=safe.x;player.y=safe.y;snapCameraToPlayer();hazardGraceTimer=(ENV_SPEC.transition.hazard_grace_after_transition_ms||750)/1000;
+  if(!envTransition)return;envTransition.t+=dt;if(envTransition.t<envTransition.duration)return;const next=envTransition.nextWave;bg=envTransition.newImg||bg;envTransition=null;setWaveEnvironment(next,{immediate:true});const safe=nearestSafePoint(player.x,player.y,player.r);player.x=safe.x;player.y=safe.y;snapCameraToPlayer();hazardGraceTimer=(ENV_SPEC.transition.hazard_grace_after_transition_ms||750)/1000;
   waveNumber=next;applyWaveHpBaseline(waveNumber);if(waveNumber===9) toast('Предупреждение: не доверяй объектам','#f6c2c2',3.2);waveSpawned=0;wavePhaseIndex=0;phaseBreakState='none';phaseBreakTimer=0;lastSpawnByType={};momBossQueue=0;momBossSpawnTimer=0;spawnTimer=waveSpawnInterval();waveBossTriggered=false;waveRestTimer=0;waveBannerTimer=2.5;bossMomSpawned=bossDadSpawned=bossZavuchSpawned=false;bossMode='none';currentBoss=null;dadBossDead=false;zavuchBossDead=false;wave9RespawnUsed=(waveNumber===9?false:wave9RespawnUsed);wave9RespawnPending=false;interWaveActive=false;gameState='play';onPhaseEnter(true);toast(`Круг ${waveNumber} · ${environmentName(waveNumber)}`,'#f6e1a2',2.6);
 }
 
@@ -1544,6 +1563,20 @@ function circleInsideFloor(x,y,r){
     if(!pointInFloor(x+Math.cos(a)*r,y+Math.sin(a)*r)) return false;
   }
   return true;
+}
+function floorHorizontalLimits(y,r=0){
+  const [tl,tr,br,bl]=floorPoly;
+  const height=Math.max(1,bl.y-tl.y),t=clamp((y-tl.y)/height,0,1);
+  const left=tl.x+(bl.x-tl.x)*t,right=tr.x+(br.x-tr.x)*t;
+  const leftSlope=(bl.x-tl.x)/height,rightSlope=(br.x-tr.x)/height;
+  return {left:left+r*Math.sqrt(1+leftSlope*leftSlope),right:right-r*Math.sqrt(1+rightSlope*rightSlope)};
+}
+function wallClearanceFor(obj){
+  const r=Math.max(0,Number(obj?.r)||0);
+  // Стены учитывают видимый прямоугольник, мебель — прежний круг у ног.
+  if(typeof player!=='undefined'&&obj===player) return {top:102,bottom:58,side:74};
+  if(obj?.type) return {top:68,bottom:45,side:55};
+  return {top:r,bottom:r,side:r};
 }
 function circleRectCollision(cx,cy,r,rect){ return circleObstacleCollision(cx,cy,r,rect); }
 function collidesObstacle(x,y,r){ return obstacles.some(o=>circleObstacleCollision(x,y,r,o)); }
@@ -1912,7 +1945,7 @@ function startTestWave(w){
   w=Math.max(1,Math.min(MAX_WAVES,w|0));
   if(!ENV_IMAGES.has(w)){
     toast('ЗАГРУЗКА КРУГА…','#d8cfaa',1.4);
-    loadBackground(w).then(img=>{if(!img)ENV_IMAGES.set(w,bg||fallbackBg);startTestWave(w);});
+    loadBackground(w,{retry:true}).then(img=>{if(img)startTestWave(w);else toast('ФОН КРУГА НЕ ЗАГРУЖЕН · ПОПРОБУЙ ЕЩЁ РАЗ','#ffb3b3',2.8);});
     return;
   }
   // IMPORTANT: wave selection is displayed above frontBlackout. Once a circle is chosen,
@@ -3553,10 +3586,10 @@ function update(dt){
       p.life-=dt; if(p.freezeTimer>0) continue;
     }
     p.x+=p.vx*dt*projSpeed;p.y+=p.vy*dt*projSpeed;p.life-=dt;
-    const blocked=collidesObstacle(p.x,p.y,p.r)||!pointInFloor(p.x,p.y);
+    const blocked=collidesObstacle(p.x,p.y,p.r)||!circleInsideFloor(p.x,p.y,p.r);
     if(blocked){
       if((p.type==='chalk'||p.type==='sponge')&&p.bounces>0){
-        const hitX=collidesObstacle(p.x,oy,p.r)||!pointInFloor(p.x,oy),hitY=collidesObstacle(ox,p.y,p.r)||!pointInFloor(ox,p.y);
+        const hitX=collidesObstacle(p.x,oy,p.r)||!circleInsideFloor(p.x,oy,p.r),hitY=collidesObstacle(ox,p.y,p.r)||!circleInsideFloor(ox,p.y,p.r);
         if(hitX||(!hitX&&!hitY))p.vx*=-1;if(hitY||(!hitX&&!hitY))p.vy*=-1;p.x=ox;p.y=oy;p.bounces--;p.bounceCount=(p.bounceCount||0)+1;
         if(p.type==='chalk'&&player.chalk.control&&p.bounceCount%3===0){p.nextHitMult=2;flyText(p.x,p.y-10,'КОНТРОЛЬНАЯ!','#fff0a8');}
         if(p.type==='sponge'&&player.sponge.dust){const ar=46*areaMult();particles.push({type:'spongeDust',x:p.x,y:p.y,life:.48,max:.48,radius:ar});for(const e of enemies){if(e.alive&&dist(p.x,p.y,e.x,e.y)<=ar+e.r)damageEnemy(e,1.4*weaponDamageMult('sponge'),8,'spongeDust');}}
@@ -3578,7 +3611,7 @@ function update(dt){
   }
   projectiles.push(...newChildren);projectiles=projectiles.filter(p=>p.life>0);if(projectiles.length>450)projectiles.splice(0,projectiles.length-450);
 
-  for(const p of enemyProjectiles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(collidesObstacle(p.x,p.y,p.r)||!pointInFloor(p.x,p.y))p.life=0;}
+  for(const p of enemyProjectiles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(collidesObstacle(p.x,p.y,p.r)||!circleInsideFloor(p.x,p.y,p.r))p.life=0;}
   let pointerThreatBusy=false;if(player.knockdown<=0){pointerThreatBusy=interceptEnemyProjectiles(dt);if(!pointerThreatBusy)autoPointer(dt);}
   for(const p of enemyProjectiles){if(p.life>0&&dist(p.x,p.y,player.x,player.y)<p.r+player.r){damagePlayer(p.damage);p.life=0;}}
   enemyProjectiles=enemyProjectiles.filter(p=>p.life>0);if(enemyProjectiles.length>340)enemyProjectiles.splice(0,enemyProjectiles.length-340);
@@ -3592,13 +3625,13 @@ function update(dt){
   enemies=enemies.filter(e=>e.alive);
 
   for(const d of drops){
-    d.life-=dt;const pull=70+player.magnet,dd=dist(player.x,player.y,d.x,d.y);if(dd<pull){const a=Math.atan2(player.y-d.y,player.x-d.x),magRank=perkRank('magnet'),moveRatio=Math.max(1,effectiveMoveSpeed()/player.baseSpeed),pullSpeed=(240+magRank*105)*moveRatio;d.x+=Math.cos(a)*pullSpeed*dt;d.y+=Math.sin(a)*pullSpeed*dt;}
+    d.life-=dt;resolveEnvironmentCollisions(d);const pull=70+player.magnet,dd=dist(player.x,player.y,d.x,d.y);if(dd<pull){const a=Math.atan2(player.y-d.y,player.x-d.x),magRank=perkRank('magnet'),moveRatio=Math.max(1,effectiveMoveSpeed()/player.baseSpeed),pullSpeed=(240+magRank*105)*moveRatio;moveWithCollision(d,Math.cos(a)*pullSpeed*dt,Math.sin(a)*pullSpeed*dt);}
     if(dd<player.r+d.r+8)collectDrop(d);
     if(d.life<3&&Math.random()<.2)particles.push({type:'burn',x:d.x+rand(-6,6),y:d.y-8+rand(-4,4),life:.24+Math.random()*.1,max:.35});
     if(d.life<=0&&!d.collected)onDropExpired(d);
   }
   drops=drops.filter(d=>d.life>0&&!d.collected);
-  for(const p of particles){p.life-=dt;if(p.vx!==undefined){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.95;p.vy*=.95;}}particles=particles.filter(p=>p.life>0);if(particles.length>700)particles.splice(0,particles.length-700);
+  for(const p of particles){p.life-=dt;if(p.vx!==undefined){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.95;p.vy*=.95;if(!pointInFloor(p.x,p.y))p.life=0;}}particles=particles.filter(p=>p.life>0);if(particles.length>700)particles.splice(0,particles.length-700);
   for(const f of flyTexts){f.life-=dt;f.y-=18*dt;}flyTexts=flyTexts.filter(f=>f.life>0);
   for(const m of messages)m.life-=dt;messages=messages.filter(m=>m.life>0);
   updateDamageMeter();
@@ -3721,7 +3754,7 @@ function drawTeacher(x,y){
   let walkImg=teacherWalkImage();
   if(!(walkImg.complete&&walkImg.naturalWidth)) walkImg=teacherWalkImg;
   if(!(walkImg.complete&&walkImg.naturalWidth)){
-    drawTeacherFallback(x,y);
+    ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.scale(2,2);drawTeacherFallback(0,0);ctx.restore();
     return;
   }
   let lift=0,lean=0,stretch=1,shadowScale=1,shadowAlpha=.34;
@@ -3734,10 +3767,10 @@ function drawTeacher(x,y){
     shadowAlpha=.34-.20*arc;
   }
   ctx.save();
-  ctx.translate(Math.round(x),Math.round(y+18));
+  ctx.translate(Math.round(x),Math.round(y+36));
   ctx.scale(shadowScale,shadowScale);
   ctx.fillStyle=`rgba(5,8,6,${shadowAlpha})`;
-  ctx.beginPath();ctx.ellipse(0,0,15,5,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(0,0,28,9,0,0,Math.PI*2);ctx.fill();
   ctx.restore();
 
   const row=teacherDirectionRow();
@@ -3746,7 +3779,8 @@ function drawTeacher(x,y){
   ctx.translate(Math.round(x),Math.round(y-lift));
   if(player.knockdown>0){ctx.rotate(-1.22);ctx.translate(-4,7);}else ctx.rotate(lean);
   ctx.scale(stretch,1/stretch*1.03);
-  ctx.drawImage(walkImg,frame*96,row*96,96,96,-35,-44,70,70);
+  // Только визуальный масштаб: игровой радиус и баланс перемещения остаются прежними.
+  ctx.drawImage(walkImg,frame*96,row*96,96,96,-70,-88,140,140);
   ctx.restore();
 }
 function drawEnemy(e){
