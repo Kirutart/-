@@ -561,7 +561,7 @@ window.LEADERBOARD_CONFIG = {
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
     <button id="mainSettingsBtn" class="mainMenuBtn" type="button">Настройки</button>
-    <div id="menuVersion">TG · v7.15 · Девять кругов</div>
+    <div id="menuVersion">TG · v7.16 · Девять кругов</div>
   </div>
 </div>
 <div id="settingsModal" aria-hidden="true">
@@ -601,7 +601,7 @@ window.LEADERBOARD_CONFIG = {
   <div id="titleBar"></div>
   <div id="testMenu">
     <div id="testPanel"><button id="mainMenuBackBtn" type="button" aria-label="В главное меню">×</button>
-      <div id="testKicker">Последний урок · TG · Circles v7.15</div>
+      <div id="testKicker">Последний урок · TG · Circles v7.16</div>
       <div id="tgUserBadge">Telegram подключается…</div>
       <h1 id="testTitle">Выбери круг</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">Круги</button><button id="recordsTabBtn" type="button" class="menuActionBtn">Рекорды</button></div>
@@ -1574,7 +1574,7 @@ function floorHorizontalLimits(y,r=0){
 function wallClearanceFor(obj){
   const r=Math.max(0,Number(obj?.r)||0);
   // Стены учитывают видимый прямоугольник, мебель — прежний круг у ног.
-  if(typeof player!=='undefined'&&obj===player) return {top:102,bottom:58,side:74};
+  if(typeof player!=='undefined'&&obj===player) return {top:66,bottom:34,side:45};
   if(obj?.type) return {top:68,bottom:45,side:55};
   return {top:r,bottom:r,side:r};
 }
@@ -3754,7 +3754,7 @@ function drawTeacher(x,y){
   let walkImg=teacherWalkImage();
   if(!(walkImg.complete&&walkImg.naturalWidth)) walkImg=teacherWalkImg;
   if(!(walkImg.complete&&walkImg.naturalWidth)){
-    ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.scale(2,2);drawTeacherFallback(0,0);ctx.restore();
+    ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.scale(1.17,1.17);drawTeacherFallback(0,0);ctx.restore();
     return;
   }
   let lift=0,lean=0,stretch=1,shadowScale=1,shadowAlpha=.34;
@@ -3767,10 +3767,10 @@ function drawTeacher(x,y){
     shadowAlpha=.34-.20*arc;
   }
   ctx.save();
-  ctx.translate(Math.round(x),Math.round(y+36));
+  ctx.translate(Math.round(x),Math.round(y+21));
   ctx.scale(shadowScale,shadowScale);
   ctx.fillStyle=`rgba(5,8,6,${shadowAlpha})`;
-  ctx.beginPath();ctx.ellipse(0,0,28,9,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(0,0,17,6,0,0,Math.PI*2);ctx.fill();
   ctx.restore();
 
   const row=teacherDirectionRow();
@@ -3779,8 +3779,8 @@ function drawTeacher(x,y){
   ctx.translate(Math.round(x),Math.round(y-lift));
   if(player.knockdown>0){ctx.rotate(-1.22);ctx.translate(-4,7);}else ctx.rotate(lean);
   ctx.scale(stretch,1/stretch*1.03);
-  // Только визуальный масштаб: игровой радиус и баланс перемещения остаются прежними.
-  ctx.drawImage(walkImg,frame*96,row*96,96,96,-70,-88,140,140);
+  // Чуть крупнее исходных 70 px, но достаточно компактно, чтобы помещаться за партами.
+  ctx.drawImage(walkImg,frame*96,row*96,96,96,-41,-52,82,82);
   ctx.restore();
 }
 function drawEnemy(e){
