@@ -561,7 +561,7 @@ window.LEADERBOARD_CONFIG = {
     <button id="mainRecordsBtn" class="mainMenuBtn" type="button">Рекорды</button>
     <button id="mainWaveBtn" class="mainMenuBtn" type="button">Выбор круга</button>
     <button id="mainSettingsBtn" class="mainMenuBtn" type="button">Настройки</button>
-    <div id="menuVersion">TG · v7.21 · Девять кругов</div>
+    <div id="menuVersion">TG · v7.22 · Девять кругов</div>
   </div>
 </div>
 <div id="settingsModal" aria-hidden="true">
@@ -590,7 +590,7 @@ window.LEADERBOARD_CONFIG = {
         </div>
       </div>
       <div id="cards"></div>
-      <div id="upgradeFooter">1–2 основных оружия · Распыление снижает мощность · Синергии любят фокус</div>
+      <div id="upgradeFooter">1–3 основных оружия · Распыление мягко снижает мощность · Синергии любят фокус</div>
     </div>
   </div>
   <div id="hint" style="display:none!important"></div>
@@ -601,7 +601,7 @@ window.LEADERBOARD_CONFIG = {
   <div id="titleBar"></div>
   <div id="testMenu">
     <div id="testPanel"><button id="mainMenuBackBtn" type="button" aria-label="В главное меню">×</button>
-      <div id="testKicker">Последний урок · TG · Circles v7.21</div>
+      <div id="testKicker">Последний урок · TG · Circles v7.22</div>
       <div id="tgUserBadge">Telegram подключается…</div>
       <h1 id="testTitle">Выбери круг</h1>
       <div id="menuActions"><button id="wavesTabBtn" type="button" class="menuActionBtn active">Круги</button><button id="recordsTabBtn" type="button" class="menuActionBtn">Рекорды</button></div>
@@ -1298,6 +1298,9 @@ const restartBtn = document.getElementById('restartBtn');
 const overlay = document.getElementById('overlay');
 const cards = document.getElementById('cards');
 const titleBar = document.getElementById('titleBar');
+const upgradeKicker = document.getElementById('upgradeKicker');
+const upgradeTitle = document.getElementById('upgradeTitle');
+const upgradeSubtitle = document.getElementById('upgradeSubtitle');
 const upgradeLevelText = document.getElementById('upgradeLevelText');
 const upgradeHeal = document.getElementById('upgradeHeal');
 const upgradeFooter = document.getElementById('upgradeFooter');
@@ -1972,14 +1975,16 @@ function startTestWave(w){
   while(player.xp>=levelThreshold(player.level+1) && player.level<200){ player.level++; levelUpQueue.push(player.level); }
   totalKills=testKillsBeforeWave(w);
   testMenu.style.display='none'; waveMenuBtn.style.display='block';
-  if(levelUpQueue.length){
-    testStartPending=true; gameState='pause';
-    testBuildBadge.textContent=`Тест: волна ${w} · ${levelUpQueue.length} прокачек осталось`;
-    testBuildBadge.style.display='block';
-    levelUp();
-  }else{
-    beginSelectedTestWave();
-  }
+  showStarterWeaponSelection(()=>{
+    if(levelUpQueue.length){
+      testStartPending=true; gameState='pause';
+      testBuildBadge.textContent=`Тест: волна ${w} · ${levelUpQueue.length} прокачек осталось`;
+      testBuildBadge.style.display='block';
+      levelUp();
+    }else{
+      beginSelectedTestWave();
+    }
+  });
 }
 function beginSelectedTestWave(){
   setWaveEnvironment(waveNumber,{immediate:true});
@@ -2026,14 +2031,16 @@ let recentDamageEvents=[];
 
 function reset(){
   player={x:470,y:1470,r:17,baseSpeed:255,speed:255,hp:20,maxHp:20,waveBaseMaxHp:20,armor:0,magnet:0,level:1,xp:0,hurtFlash:0,knockdown:0,lastMove:{x:0,y:1},walkTime:0,spriteMoving:false,fireWeapon:null,frostWeapon:null,
-    perkRanks:{},perkSeen:{},perkLastOffered:{},upgradeOfferSerial:0, weaponDouble:false, authority:false, nerves:false, fullControl:false,
+    perkRanks:{},perkSeen:{},perkLastOffered:{},upgradeOfferSerial:0,starterWeapon:null,weaponFocus:null,secondWeaponOfferSeen:false,
+    lastUtilityOfferId:null,utilityOfferSkipStreak:0,utilityBlockId:null,utilityBlockThroughSerial:0,
+    weaponDouble:false, authority:false, nerves:false, fullControl:false,
     favoriteTeacher:false,respectHearts:0,lostXpBank:0,
     stimulants:false,stimTimers:[], massExam:false,pickupBurst:0,pickupBurstTimer:0,massExamCd:0,
     fiveStar:false,stars:0,killsSinceStar:0,starMight:false,starTube:false,
     badGrade:false,twoStacks:0,complaint:false, ghostBurst:false,panicClass:false,collectiveHysteria:false,surpriseExam:false,surpriseExamTimer:30,deskMonitor:false,hallRun:false,parentChat:false,parentChatTimer:55,parentChatActive:0,parentChatSpawn:0,
     parkour:{unlocked:false,cooldown:0,baseCd:4.5,flash:0,active:false,t:0,duration:.43,smokeTimer:0,boost:false,boostTimer:0,landingWave:false,tubeRush:false},
-    chalk:{count:1,damage:1,cooldown:0.45,pierce:0,size:1,ricochet:0,split:false,control:false,ghostChance:0},
-    pointer:{unlocked:false,damage:2,range:96,cooldown:1.25,timer:0,arc:0.9,arcRank:0,knock:18,reflect:false,split:false,discipline:false,windup:.26,charge:0,charging:false},
+    chalk:{unlocked:false,count:1,damage:1,cooldown:0.45,pierce:0,size:1,ricochet:0,split:false,control:false,ghostChance:0},
+    pointer:{unlocked:false,damage:2,range:96,cooldown:1.25,timer:0,arc:0.9,arcRank:0,knock:18,reflect:false,split:false,discipline:false,windup:.18,charge:0,charging:false},
     tube:{unlocked:false,count:1,damage:2.4,radius:64,speed:1.65,angles:[0],cds:[0],knock:20,mass:false,centrifugal:false},
     phone:{unlocked:false,count:1,damage:2.4,cooldown:5.4,timer:1.3,area:44,range:245,echo:false,voiceNote:false,voiceKills:0},
     beltWeapon:{unlocked:false,damage:5,cooldown:2.55,timer:.8,range:110,arc:1.48,back:false},
@@ -2522,7 +2529,7 @@ function perkCategory(id){
 }
 const RASTER_PERK_ICON_IDS=new Set(['chalk_count','chalk_dmg','chalk_cd','chalk_pierce','chalk_ricochet','chalk_split','chalk_control','chalk_ghost','chalk_spirit','ghost_panic','ghost_hysteria','chalk_surprise']);
 function perkIcon(id){
-  const iconAlias={phone_unlock:'phone_count',beltw_unlock:'beltw_dmg',bell_unlock:'bell_stun',sponge_unlock:'sponge_bounce',director_unlock:'director_power'};id=iconAlias[id]||id;
+  const iconAlias={chalk_unlock:'chalk_count',phone_unlock:'phone_count',beltw_unlock:'beltw_dmg',bell_unlock:'bell_stun',sponge_unlock:'sponge_bounce',director_unlock:'director_power'};id=iconAlias[id]||id;
   if(RASTER_PERK_ICON_IDS.has(id)) return `<img class="perkIconImage" src="assets/ui/perk-icons/${id}.webp" width="192" height="192" alt="" aria-hidden="true" draggable="false" decoding="async">`;
   const head=`<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">`;
   const foot=`</svg>`;
@@ -2606,7 +2613,7 @@ function perkFamily(id){
 }
 function weaponFamilyName(f){ return f==='chalk'?'мел':f==='pointer'?'указка':f==='tube'?'тубус':f==='phone'?'телефон':f==='belt'?'ремень':f==='bell'?'звонок':f==='sponge'?'губка':f==='director'?'директор':''; }
 const WEAPON_CORE_IDS={
-  chalk:['chalk_count','chalk_dmg','chalk_cd','chalk_pierce','chalk_ricochet'],
+  chalk:['chalk_unlock','chalk_count','chalk_dmg','chalk_cd','chalk_pierce','chalk_ricochet'],
   pointer:['pointer_unlock','pointer_arc','pointer_range','pointer_dmg','pointer_cd'],
   tube:['tube_unlock','tube_speed','tube_radius','tube_count','tube_dmg','tube_knock'],
   phone:['phone_unlock','phone_count','phone_area','phone_cd','phone_dmg'],
@@ -2627,7 +2634,7 @@ const SPECIAL_FAMILY={
 };
 function weaponInvestment(f){
   let r=(WEAPON_CORE_IDS[f]||[]).reduce((sum,id)=>sum+perkRank(id),0);
-  if(f==='chalk') r+=2; // стартовый мел уже слегка освоен
+  if(player.starterWeapon===f) r+=2; // любое выбранное стартовое оружие начинает с одинаковым освоением
   return r;
 }
 function weaponMasteryMult(f){
@@ -2640,7 +2647,8 @@ function weaponMasteryMult(f){
   return 1.78;
 }
 function activeWeaponFamilies(){
-  const a=['chalk'];
+  const a=[];
+  if(player.chalk?.unlocked)a.push('chalk');
   if(player.pointer?.unlocked)a.push('pointer');
   if(player.tube?.unlocked)a.push('tube');
   if(player.phone?.unlocked)a.push('phone');
@@ -2650,10 +2658,24 @@ function activeWeaponFamilies(){
   if(player.director?.unlocked)a.push('director');
   return a;
 }
+const COMMON_WEAPON_FAMILIES=['chalk','pointer','tube'];
+function weaponIsUnlocked(f){
+  if(f==='chalk')return !!player.chalk?.unlocked;
+  if(f==='pointer')return !!player.pointer?.unlocked;
+  if(f==='tube')return !!player.tube?.unlocked;
+  if(f==='phone')return !!player.phone?.unlocked;
+  if(f==='belt')return !!player.beltWeapon?.unlocked;
+  if(f==='bell')return !!player.bell?.unlocked;
+  if(f==='sponge')return !!player.sponge?.unlocked;
+  if(f==='director')return !!player.director?.unlocked;
+  return false;
+}
+function commonActiveWeaponFamilies(){return COMMON_WEAPON_FAMILIES.filter(weaponIsUnlocked);}
 function arsenalDilutionMult(){
-  const n=activeWeaponFamilies().length;
+  // Телефон и вызов директора — вспомогательные конфискаты, а не полноценные основные ветки.
+  const n=activeWeaponFamilies().filter(f=>!['phone','director'].includes(f)).length;
   if(n<=2)return 1;
-  return ({3:.84,4:.70,5:.60,6:.53,7:.48,8:.45})[n]||.45;
+  return ({3:.95,4:.88,5:.80,6:.74})[n]||.70;
 }
 function weaponDamageMult(f){ return damageMult()*weaponMasteryMult(f)*arsenalDilutionMult(); }
 function sourceWeaponFamily(source){
@@ -2727,6 +2749,51 @@ function pickRandom(pool, used, predicate=()=>true){
   if(!candidates.length) return null;
   return candidates[(Math.random()*candidates.length)|0];
 }
+function utilityOfferTemporarilyBlocked(id){
+  return player.utilityBlockId===id && (player.upgradeOfferSerial||0)<=Number(player.utilityBlockThroughSerial||0);
+}
+function settleUtilityOffer(selectedId,options){
+  const offered=[...(options||[])].reverse().find(o=>o.kind==='utility');
+  if(!offered)return;
+  if(selectedId===offered.id){
+    player.lastUtilityOfferId=null;player.utilityOfferSkipStreak=0;return;
+  }
+  if(player.lastUtilityOfferId===offered.id)player.utilityOfferSkipStreak=(player.utilityOfferSkipStreak||0)+1;
+  else{player.lastUtilityOfferId=offered.id;player.utilityOfferSkipStreak=1;}
+  if(player.utilityOfferSkipStreak>=2){
+    player.utilityBlockId=offered.id;
+    player.utilityBlockThroughSerial=(player.upgradeOfferSerial||0)+1;
+    player.lastUtilityOfferId=null;player.utilityOfferSkipStreak=0;
+  }
+}
+function activateStarterWeapon(family){
+  player.starterWeapon=family;player.weaponFocus=family;
+  player.chalk.unlocked=family==='chalk';
+  player.pointer.unlocked=family==='pointer';
+  player.tube.unlocked=family==='tube';
+  if(player.tube.unlocked)syncTubeAngles(true);
+}
+function showStarterWeaponSelection(onChosen){
+  gameState='pause';relStick();overlay.style.display='flex';cards.innerHTML='';
+  upgradeKicker.textContent='Перед первым уроком';
+  upgradeTitle.textContent='Чем начнём?';
+  upgradeLevelText.textContent='Стартовое оружие';
+  upgradeSubtitle.textContent='Выбор не расходует повышение уровня.';
+  upgradeHeal.textContent='';
+  upgradeFooter.textContent='Мел · Указка · Тубус';
+  const starters=[
+    {family:'chalk',id:'chalk_unlock',title:'Мел',desc:'Дальняя автоматическая атака. Надёжный и понятный старт.'},
+    {family:'pointer',id:'pointer_unlock',title:'Указка',desc:'Бьёт всех противников в ближней дуге и сбивает дальние атаки.'},
+    {family:'tube',id:'tube_unlock',title:'Тубус',desc:'Вращается вокруг учительницы и наказывает за правильное движение.'}
+  ];
+  starters.forEach(opt=>{
+    const meta=perkCategory(opt.id),card=document.createElement('button');card.type='button';card.className='upgradeCard '+meta.cls;
+    card.innerHTML=`<div class="perkIcon">${perkIcon(opt.id)}</div><div class="perkText"><div class="perkMeta">Стартовое оружие</div><div class="perkTitle">${opt.title}</div><p class="perkDesc">${opt.desc}</p></div><div class="perkArrow">›</div>`;
+    card.onclick=e=>{e.preventDefault();e.stopPropagation();if(card.dataset.chosen==='1')return;card.dataset.chosen='1';cards.style.pointerEvents='none';activateStarterWeapon(opt.family);overlay.style.display='none';cards.style.pointerEvents='auto';try{window.TGGame?.selection();}catch(_){}onChosen?.();};
+    cards.appendChild(card);
+  });
+  queueUpgradeCardFit();
+}
 function levelUp(){
   if(!levelUpQueue.length) return;
   const shownLevel=levelUpQueue.shift();
@@ -2737,9 +2804,12 @@ function levelUp(){
   gameState='pause';
   if(typeof relStick==='function') relStick();
   overlay.style.display='flex'; cards.innerHTML='';
+  upgradeKicker.textContent='Повышение квалификации';
+  upgradeTitle.textContent='Чем отбиваться дальше?';
+  upgradeSubtitle.textContent='Выбери один навык. Игра остановлена — домашки пока не горят.';
   upgradeLevelText.textContent='Уровень '+shownLevel;
   upgradeHeal.textContent=healed>0 ? 'Передышка: +'+Math.round(healed*10)/10+' HP' : 'HP уже полный';
-  if(upgradeFooter){const af=activeWeaponFamilies();const dil=arsenalDilutionMult();upgradeFooter.textContent=`Фокус: ${weaponFamilyName(player.weaponFocus||'chalk')} · Оружий ${af.length} · ${dil<.999?'распыление ×'+dil.toFixed(2):'без штрафа'} · 1–2 ветки = сила`;}
+  if(upgradeFooter){const af=activeWeaponFamilies();const dil=arsenalDilutionMult();upgradeFooter.textContent=`Фокус: ${weaponFamilyName(player.weaponFocus||player.starterWeapon)} · Оружий ${af.length} · ${dil<.999?'распыление ×'+dil.toFixed(2):'без штрафа'} · 1–3 ветки`;}
   toast('Уровень ' + shownLevel + '!', '#fff', 1.7);
   try{ window.TGGame?.selection(); }catch(_){}
 
@@ -2750,7 +2820,7 @@ function levelUp(){
   const hasEarlyDefense = player.pointer.unlocked || player.armor>0;
   if(waveNumber<=3 && shownLevel>=3 && !hasEarlyDefense){
     const alreadyDefensive=opts.some(o=>o.id==='pointer_unlock'||o.id==='armor');
-    if(!alreadyDefensive){
+    if(!alreadyDefensive && !utilityOfferTemporarilyBlocked('armor')){
       // Страховка занимает только третий слот и никогда не вытесняет гарантированный апгрейд оружия.
       opts[opts.length-1]={id:'armor',title:'Плотный пиджак',desc:'Броня +1: каждый входящий удар наносит на 1 HP меньше, но минимум 1.',max:3,kind:'utility'};
     }
@@ -2768,7 +2838,7 @@ function levelUp(){
     card.className='upgradeCard '+meta.cls+((opt.rare||opt.kind==='special'||opt.id.startsWith('parkour_')||opt.id==='weapon_double')?' rare':'');
     const rankLabel=choiceRankText(opt);
     const family=perkFamily(opt.id);
-    const focusLabel=(family && (player.weaponFocus||'chalk')===family && opt.kind==='weaponCore')?' · Основное оружие':'';
+    const focusLabel=(family && (player.weaponFocus||player.starterWeapon)===family && opt.kind==='weaponCore')?' · Основное оружие':'';
     const masteryLabel=family&&opt.kind==='weaponCore'?` · ${weaponStageText(family)}`:'';
     card.innerHTML=`<div class="perkIcon">${perkIcon(opt.id)}</div><div class="perkText"><div class="perkMeta">${meta.label} · ${rankLabel}${focusLabel}${masteryLabel}</div><div class="perkTitle">${opt.title}</div><p class="perkDesc">${opt.desc}</p></div><div class="perkArrow">›</div>`;
     card.onclick=(e)=>{
@@ -2777,6 +2847,7 @@ function levelUp(){
       card.dataset.chosen='1';
       cards.style.pointerEvents='none';
       try{ window.TGGame?.impact(opt.rare||opt.kind==='special'?'medium':'light'); }catch(_){}
+      settleUtilityOffer(opt.id,opts);
       applyUpgrade(opt);
       if(testStartPending){
         testBuildBadge.textContent=`Тест: волна ${testSelectedWave} · ${levelUpQueue.length} прокачек осталось`;
@@ -2809,20 +2880,21 @@ function getUpgradeChoices(n,shownLevel=player.level){
   add('magnet','Пылесос','Радиус притягивания больше, и опыт летит к тебе быстрее.',4,true,'utility');
 
   // ---- ЯДРО ОРУЖИЯ: эти перки имеют приоритет на ранней игре ----
-  add('chalk_count','Мел: россыпь','Ещё +2 куска мела за залп.',3,true,'weaponCore');
-  add('chalk_dmg','Мел пожёстче','Урон каждого куска мела +1.',4,true,'weaponCore');
-  add('chalk_cd','Меломёт','Кулдаун броска мела −18%.',4,true,'weaponCore');
-  add('chalk_pierce','Пробивной мел','Мел пробивает ещё одного школьника.',3,true,'weaponCore');
-  add('chalk_ricochet','Мел: рикошет','Мел получает ещё один отскок от парт и стен.',3,true,'weaponCore');
+  add('chalk_unlock','Мел','Добавить мел в активный арсенал.',1,!player.chalk.unlocked,'weaponCore');
+  add('chalk_count','Мел: россыпь','Ещё +2 куска мела за залп.',3,player.chalk.unlocked,'weaponCore');
+  add('chalk_dmg','Мел пожёстче','Урон каждого куска мела +1.',4,player.chalk.unlocked,'weaponCore');
+  add('chalk_cd','Меломёт','Кулдаун броска мела −18%.',4,player.chalk.unlocked,'weaponCore');
+  add('chalk_pierce','Пробивной мел','Мел пробивает ещё одного школьника.',3,player.chalk.unlocked,'weaponCore');
+  add('chalk_ricochet','Мел: рикошет','Мел получает ещё один отскок от парт и стен.',3,player.chalk.unlocked,'weaponCore');
 
   // Новое оружие открывается достаточно рано, но не забивает обе карточки сразу на первом левеле.
-  add('pointer_unlock','Указка','Новое оружие: автоматически бьёт рядом и сбивает дальние атаки.',1,!player.pointer.unlocked && shownLevel>=3,'weaponCore');
+  add('pointer_unlock','Указка','Новое оружие: автоматически бьёт рядом и сбивает дальние атаки.',1,!player.pointer.unlocked,'weaponCore');
   add('pointer_arc','Круговой обход','Дуга указки: сначала 210°, затем 300° максимум.',2,player.pointer.unlocked,'weaponCore');
   add('pointer_range','Длинная указка','Радиус удара и перехвата больше.',3,player.pointer.unlocked,'weaponCore');
   add('pointer_dmg','Тяжёлая указка','Урон указки +1.',4,player.pointer.unlocked,'weaponCore');
   add('pointer_cd','Щёлк-щёлк','Кулдаун указки −18%, подготовка к взмаху быстрее.',4,player.pointer.unlocked,'weaponCore');
 
-  add('tube_unlock','Тубус','Новое оружие: вращается вокруг героини.',1,!player.tube.unlocked && shownLevel>=3,'weaponCore');
+  add('tube_unlock','Тубус','Новое оружие: вращается вокруг героини.',1,!player.tube.unlocked,'weaponCore');
   add('tube_speed','Тубус: разгон','Скорость вращения тубуса выше.',4,player.tube.unlocked,'weaponCore');
   add('tube_radius','Тубус: длинная орбита','Радиус орбиты увеличивается.',3,player.tube.unlocked,'weaponCore');
   add('tube_count','Ещё тубус','Добавить ещё один тубус.',3,player.tube.unlocked,'weaponCore');
@@ -2866,14 +2938,14 @@ function getUpgradeChoices(n,shownLevel=player.level){
   add('parkour_tube','Паркур: центрифуга','Пока ты в прыжке, тубусы вращаются в 3 раза быстрее.',1,player.parkour.unlocked && player.tube.unlocked && shownLevel>=12,'special',true);
   add('parkour_desk','Дежурный по классу','Парта после паркура на 10 секунд заряжается: врагов у неё бьёт и отбрасывает.',1,player.parkour.unlocked && shownLevel>=12,'special',true);
 
-  add('chalk_split','Мел: крошится','После первого попадания мел распадается на два маленьких снаряда.',1,shownLevel>=6,'special');
+  add('chalk_split','Мел: крошится','После первого попадания мел распадается на два маленьких снаряда.',1,player.chalk.unlocked&&shownLevel>=6,'special');
   add('chalk_control','Контрольная','Каждый третий рикошет заряжает следующее попадание двойным уроном.',1,player.chalk.ricochet>0 && shownLevel>=6,'special');
   // Списывание — строго бинарная пассивка: взял один раз и навсегда исчезло из выдачи.
-  add('chalk_ghost','Списывание','Убитый мелом школьник иногда становится призраком и на 3 секунды пугает соседей.',1,shownLevel>=9,'special');
+  add('chalk_ghost','Списывание','Убитый мелом школьник иногда становится призраком и на 3 секунды пугает соседей.',1,player.chalk.unlocked&&shownLevel>=9,'special');
   add('chalk_spirit','Испустил дух','Напугав 5+ школьников, призрак перед исчезновением выпускает круговой залп мела.',1,player.chalk.ghostChance>0 && shownLevel>=12,'special',true);
   add('ghost_panic','Паника в классе','Испуганные школьники сталкиваются, наносят урон и могут создавать новых призраков.',1,player.chalk.ghostChance>0 && shownLevel>=12,'special',true);
   add('ghost_hysteria','Коллективная истерика','Паникующий школьник заражает страхом соседей при столкновении; вторичный страх короче.',1,player.chalk.ghostChance>0 && shownLevel>=15,'special',true);
-  add('chalk_surprise','Контрольная без предупреждения','Раз в 30 секунд весь мел зависает, перенаводится и резко ускоряется.',1,shownLevel>=12,'special',true);
+  add('chalk_surprise','Контрольная без предупреждения','Раз в 30 секунд весь мел зависает, перенаводится и резко ускоряется.',1,player.chalk.unlocked&&shownLevel>=12,'special',true);
 
   add('pointer_reflect','Указка: Обратка','Все дальние снаряды в дуге одного взмаха летят назад.',1,player.pointer.unlocked && !player.pointer.reflect && shownLevel>=6,'special');
   add('pointer_split','Педсовет','Каждый отражённый снаряд раздваивается.',1,player.pointer.reflect && shownLevel>=9,'special');
@@ -2903,7 +2975,7 @@ function getUpgradeChoices(n,shownLevel=player.level){
   const core=pool.filter(o=>o.kind==='weaponCore');
   const util=pool.filter(o=>o.kind==='utility');
   const special=pool.filter(o=>o.kind==='special');
-  const focus=player.weaponFocus||'chalk';
+  const focus=player.weaponFocus||player.starterWeapon;
 
   // v6.16: специальные механики, которые пользователь просил реально видеть в позднем билде.
   // Сначала показываем ещё не виденные элементы этой «витрины», затем остальные новые специальные.
@@ -2926,7 +2998,7 @@ function getUpgradeChoices(n,shownLevel=player.level){
       if(!taken) v+=120;
       if((player.perkSeen[o.id]||0)===0) v+=55;
       if(featuredSpecialIds.has(o.id)) v+=25;
-      const sf=SPECIAL_FAMILY[o.id]||null;if(sf && sf===(player.weaponFocus||'chalk'))v+=72;
+      const sf=SPECIAL_FAMILY[o.id]||null;if(sf && sf===(player.weaponFocus||player.starterWeapon))v+=72;
       v+=Math.min(30,Math.max(0,age)*6);
       if(age<=1) v-=100;
       else if(age===2) v-=35;
@@ -2937,33 +3009,52 @@ function getUpgradeChoices(n,shownLevel=player.level){
   }
   function pushChoice(x){ if(x){out.push(x);used.add(x.id);return true;} return false; }
 
-  // СЛОТ 1: оружие в фокусе. Если в открытом оружии уже НЕЧЕГО качать — слот сразу отдаётся специальной механике.
-  let c=pickRandom(core,used,o=>o.family===focus && !(o.id.endsWith('_unlock')));
-  if(!c) c=pickRandom(core,used,o=>o.family===focus);
-  // Если именно выбранное оружие уже выкачано, не подсовываем вместо него чужой бесконечный core:
-  // первый слот превращается в специальный. Другие оружия при желании всё ещё живут во втором слоте.
-  if(!c) c=pickSpecial(true);
-  if(!c) c=pickRandom(core,used);
-  if(!c) c=pickRandom(util,used);
+  const ownedCore=()=>core.filter(o=>weaponIsUnlocked(o.family)&&!o.id.endsWith('_unlock'));
+  const newWeapons=onlyCommon=>core.filter(o=>o.id.endsWith('_unlock')&&!weaponIsUnlocked(o.family)&&(!onlyCommon||COMMON_WEAPON_FAMILIES.includes(o.family)));
+  function pickOwnedCore(){
+    const owned=ownedCore();if(!owned.length)return null;
+    if(focus&&Math.random()<.65){const focused=pickRandom(owned,used,o=>o.family===focus);if(focused)return focused;}
+    return pickRandom(owned,used);
+  }
+  function pickNewWeapon(onlyCommon=false){return pickRandom(newWeapons(onlyCommon),used);}
+
+  // СЛОТ 1: гарантированное развитие уже взятого оружия. При двух ветках фокус получает вес 65%, вторая — 35%.
+  let c=pickOwnedCore();
+  if(!c)c=pickSpecial(true);
+  if(!c)c=pickRandom(util,used,o=>!utilityOfferTemporarilyBlocked(o.id));
+  if(!c)c=pickRandom(core,used);
   pushChoice(c);
 
-  // СЛОТ 2: пока есть реальные не-максимальные оружейные апгрейды — предлагаем их.
-  // Когда они закончились, второй слот тоже становится специальным, а не повторяет max-rank карточку.
-  c=Math.random()<.70?pickRandom(core,used,o=>o.family===focus):null;
-  if(!c) c=pickRandom(core,used);
-  if(!c) c=pickSpecial(true);
-  if(!c) c=pickRandom(util,used);
+  // СЛОТ 2: окно изменения билда.
+  // При одном оружии 41% на новое даёт ≈65% увидеть второе за два повышения; если его не показали трижды — четвёртое гарантировано.
+  const activeCount=activeWeaponFamilies().length;
+  const offerIndex=player.upgradeOfferSerial||1;
+  if(activeCount<=1){
+    const forcedNew=offerIndex===4&&!player.secondWeaponOfferSeen;
+    const roll=Math.random();
+    if(forcedNew||roll<.41)c=pickNewWeapon(true);
+    else if(roll<.51)c=pickSpecial(true);
+    else c=pickOwnedCore();
+  }else{
+    const roll=Math.random();
+    if(roll<.70)c=pickOwnedCore();
+    else if(roll<.85)c=pickNewWeapon(false);
+    else c=pickSpecial(true);
+  }
+  if(!c)c=pickOwnedCore();
+  if(!c)c=pickNewWeapon(false);
+  if(!c)c=pickSpecial(true);
+  if(!c)c=pickRandom(util,used,o=>!utilityOfferTemporarilyBlocked(o.id));
   pushChoice(c);
 
-  // СЛОТ 3: ранняя игра всё ещё помогает собрать оружие, но после 20 уровня специальная карта гарантирована.
-  // Если оружейный пул исчерпан, special включается независимо от номера уровня.
-  const noCoreLeft=!core.some(o=>!used.has(o.id));
-  const specialTurn=noCoreLeft || (shownLevel<=10 ? (shownLevel%3===0) : (shownLevel<=20 ? shownLevel%2===0 : true));
-  c=specialTurn ? pickSpecial(true) : null;
-  if(!c) c=pickRandom(util,used);
-  if(!c) c=pickSpecial(true);
-  if(!c) c=pickRandom(core,used);
+  // СЛОТ 3: универсальная карта. Одна и та же пропущенная пассивка не показывается три окна подряд.
+  c=pickRandom(util,used,o=>!utilityOfferTemporarilyBlocked(o.id));
+  if(!c)c=pickSpecial(true);
+  if(!c)c=pickOwnedCore();
+  if(!c)c=pickNewWeapon(false);
   pushChoice(c);
+
+  if(out.some(o=>o.id==='chalk_unlock'||o.id==='pointer_unlock'||o.id==='tube_unlock'))player.secondWeaponOfferSeen=true;
 
   // Страховка: никогда не возвращаем уже maxed perk. pool уже отфильтрован через perkRank(id)<max.
   // Если оружие полностью закончено, свободные карточки заполняются специальными механиками.
@@ -3035,8 +3126,6 @@ function applyUpgrade(opt){
   // Двойная защита: даже если старая карточка каким-то образом осталась на экране, maxed-перк не применяется повторно.
   if(!upgradeOptionStillValid(opt)){ toast('ЭТО УЖЕ ПРОКАЧАНО ДО МАКСИМУМА','#ffcf87',1.5); return; }
   if(!opt.consumable) bumpPerk(opt.id);
-  const selectedFamily=perkFamily(opt.id);
-  if(selectedFamily) player.weaponFocus=selectedFamily;
   switch(opt.id){
     case 'emergency_heal': player.hp=Math.min(player.maxHp,player.hp+player.maxHp*.40); break;
     case 'move': player.speed*=1.12; break;
@@ -3049,6 +3138,7 @@ function applyUpgrade(opt){
     case 'parkour_wave': player.parkour.landingWave=true; break;
     case 'parkour_tube': player.parkour.tubeRush=true; break;
     case 'parkour_desk': player.deskMonitor=true; break;
+    case 'chalk_unlock': player.chalk.unlocked=true; break;
     case 'chalk_count': player.chalk.count=Math.min(9,player.chalk.count+2); break;
     case 'chalk_dmg': player.chalk.damage+=1; break;
     case 'chalk_cd': player.chalk.cooldown=Math.max(.11,player.chalk.cooldown*.82); break;
@@ -3068,7 +3158,7 @@ function applyUpgrade(opt){
     case 'pointer_arc': player.pointer.arcRank++; player.pointer.arc=(player.pointer.arcRank===1?210:300)*Math.PI/360; break;
     case 'pointer_range': player.pointer.range+=22; break;
     case 'pointer_dmg': player.pointer.damage+=1; break;
-    case 'pointer_cd': player.pointer.cooldown=Math.max(.42,player.pointer.cooldown*.82); player.pointer.windup=Math.max(.11,player.pointer.windup*.90); break;
+    case 'pointer_cd': player.pointer.cooldown=Math.max(.42,player.pointer.cooldown*.82); player.pointer.windup=Math.max(.08,player.pointer.windup*.90); break;
     case 'tube_unlock': player.tube.unlocked=true; syncTubeAngles(); break;
     case 'tube_speed': player.tube.speed+=.5; break;
     case 'tube_radius': player.tube.radius+=12; break;
@@ -3155,7 +3245,7 @@ function autoPointer(dt){
   }
   for(const e of hit) damageEnemy(e,player.pointer.damage*weaponDamageMult('pointer'),player.pointer.knock,'pointer');
   pointerSwingHitsProjectiles(a);
-  for(const ang of angles) particles.push({type:'slash',x:player.x,y:player.y,a:ang,life:.42,max:.42,arc:player.pointer.arc,range:reach});
+  for(const ang of angles) particles.push({type:'slash',x:player.x,y:player.y,a:ang,life:.30,max:.30,arc:player.pointer.arc,range:reach});
   player.pointer.timer=player.pointer.cooldown;
 }
 function pointSegmentDistance(px,py,x1,y1,x2,y2){
@@ -3509,7 +3599,7 @@ function interceptEnemyProjectiles(dt){
   player.pointer.charging=true;player.pointer.charge+=dt*cooldownRate();
   if(player.pointer.charge<player.pointer.windup) return true;
   const a=bestPointerClusterAngle(threats); if(a===null)return false;
-  for(const ang of pointerAngles(a)) particles.push({type:'slash',x:player.x,y:player.y,a:ang,life:.44,max:.44,arc:player.pointer.arc,range:effectivePointerRange()});
+  for(const ang of pointerAngles(a)) particles.push({type:'slash',x:player.x,y:player.y,a:ang,life:.30,max:.30,arc:player.pointer.arc,range:effectivePointerRange()});
   const hitCount=pointerSwingHitsProjectiles(a);
   if(hitCount>1) flyText(player.x,player.y-38,player.pointer.reflect?`ОБРАТКА ×${hitCount}!`:`СБИТО ×${hitCount}!`,player.pointer.reflect?'#bfeaff':'#f3f3f3');
   player.pointer.timer=player.pointer.cooldown;player.pointer.charge=0;player.pointer.charging=false;return true;
@@ -3568,7 +3658,7 @@ function update(dt){
   if(player.surpriseExam){player.surpriseExamTimer-=dt;if(player.surpriseExamTimer<=0){triggerSurpriseExam();player.surpriseExamTimer=30;}}
 
   if(player.knockdown<=0){
-    player.chalk.timer=(player.chalk.timer||0)-dt*cooldownRate();if(player.chalk.timer<=0){fireChalk();player.chalk.timer=player.chalk.cooldown;}
+    if(player.chalk.unlocked){player.chalk.timer=(player.chalk.timer||0)-dt*cooldownRate();if(player.chalk.timer<=0){fireChalk();player.chalk.timer=player.chalk.cooldown;}}
     updateTube(dt);
     updatePhone(dt);
     updatePlayerBelt(dt);
