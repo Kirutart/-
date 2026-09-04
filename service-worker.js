@@ -1,9 +1,9 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.22`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.23`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
-  './assets/ui/records-background-v2-841x1870.webp',
+  './assets/ui/records-background-v3-1440x2560.png',
   './assets/ui/story-dialog-frame-v2.webp',
   './assets/ui/perk-upgrade-background-v2-841x1870.webp',
   './assets/ui/perk-icons/chalk_count.webp',
@@ -36,6 +36,7 @@ const APP_SHELL = [
   './assets/game/enemies/sprites/first-grader-walk-v1.webp',
   './assets/game/enemies/sprites/middle-schooler-walk-v1.webp',
   './assets/game/enemies/sprites/spitter-walk-v1.webp',
+  './assets/game/weapons/pointer-topdown-v1.png',
   './assets/game/interwave/pause_01_limbo.webp',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Regular.ttf',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Bold.ttf',
