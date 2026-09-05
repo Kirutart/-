@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'last-lesson-static-';
-const CACHE_NAME = `${CACHE_PREFIX}v7.23`;
+const CACHE_NAME = `${CACHE_PREFIX}v7.24`;
 const APP_SHELL = [
   './assets/ui/main-menu-background-v2-1080x1920.webp',
   './assets/ui/circle-select-background-v3-744x2114.webp',
@@ -37,6 +37,9 @@ const APP_SHELL = [
   './assets/game/enemies/sprites/middle-schooler-walk-v1.webp',
   './assets/game/enemies/sprites/spitter-walk-v1.webp',
   './assets/game/weapons/pointer-topdown-v1.png',
+  './assets/game/pickups/xp-notebook-v1.png',
+  './assets/game/pickups/xp-books-v1.png',
+  './assets/game/pickups/xp-cigarette-v1.png',
   './assets/game/interwave/pause_01_limbo.webp',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Regular.ttf',
   './assets/fonts/cormorant-unicase/CormorantUnicase-Bold.ttf',
